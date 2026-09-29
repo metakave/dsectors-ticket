@@ -16,14 +16,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!whatsapp || !whatsapp.trim()) {
+    const cleanWhatsapp = (whatsapp || "").trim().replace(/\s+/g, "");
+    const phoneRegex = /^0\d{10}$/;
+
+    if (!cleanWhatsapp) {
       return NextResponse.json(
         { success: false, error: "অনুগ্রহ করে হোয়াটসঅ্যাপ নম্বর লিখুন।" },
         { status: 400 }
       );
     }
 
-    if (!email || !email.trim() || !email.includes("@")) {
+    if (!phoneRegex.test(cleanWhatsapp)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "হোয়াটসঅ্যাপ নম্বরটি অবশ্যই 0 দিয়ে শুরু এবং ঠিক ১১ ডিজিট সংখ্যার হতে হবে (যেমন: 017XXXXXXXX)।",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!email || !email.trim() || !email.includes("@") || !email.includes(".")) {
       return NextResponse.json(
         {
           success: false,
@@ -33,7 +46,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!bkash || !bkash.trim()) {
+    const cleanBkash = (bkash || "").trim().replace(/\s+/g, "");
+    if (!cleanBkash) {
       return NextResponse.json(
         {
           success: false,
@@ -43,12 +57,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!phoneRegex.test(cleanBkash)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "বিকাশ নম্বরটি অবশ্যই 0 দিয়ে শুরু এবং ঠিক ১১ ডিজিট সংখ্যার হতে হবে (যেমন: 01XXXXXXXXX)।",
+        },
+        { status: 400 }
+      );
+    }
+
     // Add registration and update XLSX
     const newRegistration = await addRegistrationAsync({
       name: name.trim(),
-      whatsapp: whatsapp.trim(),
+      whatsapp: cleanWhatsapp,
       email: email.trim().toLowerCase(),
-      bkash: bkash.trim(),
+      bkash: cleanBkash,
       bkashSameAsWhatsapp: !!body.bkashSameAsWhatsapp,
     });
 

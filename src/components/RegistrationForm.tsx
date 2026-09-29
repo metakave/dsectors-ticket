@@ -31,11 +31,21 @@ export default function RegistrationForm() {
     downloadUrl: string;
   } | null>(null);
 
-  // Handle WhatsApp change: If checkbox is ticked, auto-sync bKash number
+  // Handle WhatsApp change: Only accept numbers, max 11 digits, and auto-sync bKash if checked
   const handleWhatsappChange = (val: string) => {
-    setWhatsapp(val);
+    const digitsOnly = val.replace(/\D/g, "").slice(0, 11);
+    setWhatsapp(digitsOnly);
     if (bkashSameAsWhatsapp) {
-      setBkash(val);
+      setBkash(digitsOnly);
+    }
+  };
+
+  // Handle bKash change: Only accept numbers, max 11 digits
+  const handleBkashChange = (val: string) => {
+    const digitsOnly = val.replace(/\D/g, "").slice(0, 11);
+    setBkash(digitsOnly);
+    if (bkashSameAsWhatsapp && digitsOnly !== whatsapp) {
+      setBkashSameAsWhatsapp(false);
     }
   };
 
@@ -64,21 +74,37 @@ export default function RegistrationForm() {
     e.preventDefault();
     setErrorMsg(null);
 
-    // Basic client validation
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+    const cleanWhatsapp = whatsapp.replace(/\D/g, "");
+    const cleanBkash = bkash.replace(/\D/g, "");
+    const trimmedEmail = email.trim();
+
+    // 1. Name validation
+    if (!trimmedName) {
       setErrorMsg("অনুগ্রহ করে আপনার পুরো নাম লিখুন।");
       return;
     }
-    if (!whatsapp.trim()) {
-      setErrorMsg("অনুগ্রহ করে আপনার হোয়াটসঅ্যাপ নম্বর লিখুন।");
+
+    // 2. WhatsApp Number validation (Must start with 0 and be exactly 11 digits)
+    const phoneRegex = /^0\d{10}$/;
+    if (!phoneRegex.test(cleanWhatsapp)) {
+      setErrorMsg(
+        "হোয়াটসঅ্যাপ নম্বরটি অবশ্যই 0 দিয়ে শুরু এবং ঠিক ১১ ডিজিট সংখ্যার হতে হবে (যেমন: 017XXXXXXXX)।"
+      );
       return;
     }
-    if (!email.trim() || !email.includes("@")) {
+
+    // 3. Email validation
+    if (!trimmedEmail || !trimmedEmail.includes("@") || !trimmedEmail.includes(".")) {
       setErrorMsg("ডিজিটাল টিকিট পেতে অনুগ্রহ করে একটি সঠিক ইমেইল প্রদান করুন।");
       return;
     }
-    if (!bkash.trim()) {
-      setErrorMsg("অনুগ্রহ করে টাকা পাঠানোর বিকাশ নম্বরটি লিখুন।");
+
+    // 4. bKash Number validation (Must start with 0 and be exactly 11 digits)
+    if (!phoneRegex.test(cleanBkash)) {
+      setErrorMsg(
+        "টাকা পাঠানোর বিকাশ নম্বরটি অবশ্যই 0 দিয়ে শুরু এবং ঠিক ১১ ডিজিট সংখ্যার হতে হবে (যেমন: 01XXXXXXXXX)।"
+      );
       return;
     }
 
@@ -247,19 +273,25 @@ export default function RegistrationForm() {
                   <span>হোয়াটসঅ্যাপ নম্বর (WhatsApp Number)</span>
                   <span className="text-rose-400">*</span>
                 </span>
-                <span className="text-xs sm:text-sm text-slate-400 font-normal">যোগাযোগের জন্য</span>
+                <span className="text-xs sm:text-sm text-slate-400 font-normal">১১ ডিজিট (01XXXXXXXXX)</span>
               </label>
               <div className="relative">
                 <input
                   id="whatsapp"
                   type="tel"
+                  inputMode="numeric"
+                  pattern="0[0-9]{10}"
+                  maxLength={11}
                   required
-                  placeholder="যেমন: 017XXXXXXXX"
+                  placeholder="01XXXXXXXXX (১১ ডিজিট)"
                   value={whatsapp}
                   onChange={(e) => handleWhatsappChange(e.target.value)}
-                  className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono"
+                  className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider"
                 />
               </div>
+              <p className="text-xs text-slate-400 mt-1">
+                অবশ্যই 0 দিয়ে শুরু ১১ ডিজিটের মোবাইল নম্বর হতে হবে (শুধুমাত্র সংখ্যা)।
+              </p>
             </div>
 
             {/* 3. Email Field (Must to receive digital ticket) */}
@@ -321,18 +353,19 @@ export default function RegistrationForm() {
                 <input
                   id="bkash"
                   type="tel"
+                  inputMode="numeric"
+                  pattern="0[0-9]{10}"
+                  maxLength={11}
                   required
-                  placeholder="যে বিকাশ নম্বর থেকে টাকা পাঠিয়েছেন (01XXXXXXXXX)"
+                  placeholder="01XXXXXXXXX (যে নম্বর থেকে টাকা পাঠিয়েছেন)"
                   value={bkash}
-                  onChange={(e) => {
-                    setBkash(e.target.value);
-                    if (bkashSameAsWhatsapp && e.target.value !== whatsapp) {
-                      setBkashSameAsWhatsapp(false);
-                    }
-                  }}
-                  className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono"
+                  onChange={(e) => handleBkashChange(e.target.value)}
+                  className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider"
                 />
               </div>
+              <p className="text-xs text-slate-400 mt-1">
+                যে বিকাশ নম্বর থেকে ৫০০ টাকা সেন্ড মানি করা হয়েছে (0 দিয়ে শুরু ১১ ডিজিট)।
+              </p>
             </div>
 
             {/* Submit Button */}

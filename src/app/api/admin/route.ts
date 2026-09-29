@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getRegistrations,
-  updateRegistrationStatus,
+  getRegistrationsAsync,
+  updateRegistrationStatusAsync,
   getXlsxFilePath,
 } from "@/lib/storage";
 import { TicketStatus } from "@/lib/types";
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const registrations = getRegistrations();
+    const registrations = await getRegistrationsAsync();
     const total = registrations.length;
     const pending = registrations.filter(
       (r) => r.status === "Ticket Not Sent"
@@ -68,7 +68,7 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const updated = updateRegistrationStatus(
+    const updated = await updateRegistrationStatusAsync(
       id,
       status as TicketStatus,
       ticketCode,

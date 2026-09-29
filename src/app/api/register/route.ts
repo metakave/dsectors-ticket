@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addRegistration, getXlsxFilePath } from "@/lib/storage";
+import { addRegistrationAsync, getXlsxFilePath } from "@/lib/storage";
 import { sendRegistrationEmails } from "@/lib/email";
 import { RegisterFormInput } from "@/lib/types";
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Add registration and update XLSX
-    const newRegistration = addRegistration({
+    const newRegistration = await addRegistrationAsync({
       name: name.trim(),
       whatsapp: whatsapp.trim(),
       email: email.trim().toLowerCase(),

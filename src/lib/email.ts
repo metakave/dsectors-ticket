@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { Registration } from "./types";
+import { generateXlsxBuffer } from "./storage";
 
 // Configure SMTP transport
 export function createTransporter() {
@@ -387,7 +388,12 @@ export async function sendRegistrationEmails(
       html: getRegistrantEmailHtml(reg),
     });
 
-    // 2. Send Separate Admin Notification Email (to contact@dsectors.org)
+    // Generate latest Excel spreadsheet containing all current registrations
+    const xlsxBuffer = generateXlsxBuffer();
+    const today = new Date().toISOString().split("T")[0];
+    const excelFilename = `Bimurto_Ratri_Registrations_${today}.xlsx`;
+
+    // 2. Send Separate Admin Notification Email (to contact@dsectors.org + BCCs with live Excel attachment)
     const adminMailPromise = transporter.sendMail({
       from,
       replyTo,
@@ -396,6 +402,14 @@ export async function sendRegistrationEmails(
       subject: `[নতুন নিবন্ধন] বিমূর্ত রাত্রি - ${reg.name} (বিকাশ: ${reg.bkash})`,
       text: getAdminEmailText(reg, originUrl),
       html: getAdminEmailHtml(reg, originUrl),
+      attachments: [
+        {
+          filename: excelFilename,
+          content: xlsxBuffer,
+          contentType:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        },
+      ],
     });
 
     const results = await Promise.allSettled([registrantMailPromise, adminMailPromise]);

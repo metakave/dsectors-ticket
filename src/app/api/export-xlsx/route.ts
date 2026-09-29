@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { generateXlsxBuffer } from "@/lib/storage";
+import { generateXlsxBuffer, getRegistrationsAsync } from "@/lib/storage";
 
 export async function GET() {
   try {
-    const buffer = generateXlsxBuffer();
+    const items = await getRegistrationsAsync();
+    const buffer = generateXlsxBuffer(items);
 
     const today = new Date().toISOString().split("T")[0];
     const filename = `Bimurto_Ratri_Registrations_${today}.xlsx`;

@@ -215,6 +215,10 @@ export function getRegistrantEmailHtml(reg: Registration): string {
             <td style="padding: 8px 0; color: #94a3b8;">টাকা পাঠানোর বিকাশ নম্বর:</td>
             <td style="padding: 8px 0; color: #f3e8c8; font-weight: bold; text-align: right;">${reg.bkash}</td>
           </tr>
+          <tr style="border-bottom: 1px dashed rgba(255,255,255,0.08);">
+            <td style="padding: 8px 0; color: #94a3b8;">টিকিট ফি (Amount):</td>
+            <td style="padding: 8px 0; color: #fef08a; font-weight: bold; text-align: right;">৳ ৫০০</td>
+          </tr>
           <tr>
             <td style="padding: 8px 0; color: #94a3b8;">বর্তমান স্ট্যাটাস:</td>
             <td style="padding: 8px 0; color: #f59e0b; font-weight: bold; text-align: right;">পেমেন্ট ভেরিফিকেশন সাপেক্ষে (Ticket Not Sent)</td>

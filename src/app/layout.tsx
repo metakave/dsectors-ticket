@@ -17,7 +17,7 @@ const notoSerifBengali = Noto_Serif_Bengali({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bimurtoratri.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ticket.dsectors.org"),
   title: "শব্দ ও সুরে বিমূর্ত রাত্রি | টিকিট নিবন্ধন ও বুকিং",
   description:
     "গান ও কবিতায় এক মুগ্ধকর সন্ধ্যা - 'শব্দ ও সুরে বিমূর্ত রাত্রি'। ৯ অক্টোবর ২০২৬, আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা। অনলাইনে টিকিট নিশ্চিত করতে ফর্ম পূরণ করুন।",

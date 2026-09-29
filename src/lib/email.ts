@@ -323,7 +323,16 @@ export async function sendRegistrationEmails(
       html: getAdminEmailHtml(reg, originUrl),
     });
 
-    await Promise.allSettled([registrantMailPromise, adminMailPromise]);
+    const results = await Promise.allSettled([registrantMailPromise, adminMailPromise]);
+    results.forEach((result, idx) => {
+      const type = idx === 0 ? "Registrant Email" : "Admin Notification";
+      if (result.status === "fulfilled") {
+        console.log(`✅ ${type} sent successfully. MessageId: ${result.value.messageId}`);
+      } else {
+        console.error(`❌ ${type} failed to send:`, result.reason);
+      }
+    });
+
     return { success: true };
   } catch (err) {
     console.error("❌ Error sending registration emails:", err);

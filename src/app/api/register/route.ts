@@ -55,13 +55,16 @@ export async function POST(req: NextRequest) {
     // Detect request origin
     const origin =
       req.headers.get("origin") ||
-      req.headers.get("x-forwarded-host") ||
-      "http://localhost:3000";
+      (req.headers.get("x-forwarded-host")
+        ? `https://${req.headers.get("x-forwarded-host")}`
+        : process.env.NEXT_PUBLIC_SITE_URL || "https://ticket.dsectors.org");
 
-    // Send emails asynchronously
-    sendRegistrationEmails(newRegistration, origin).catch((err) => {
-      console.error("Background email task error:", err);
-    });
+    // Await email dispatch so serverless runtime doesn't freeze/terminate before SMTP completes
+    try {
+      await sendRegistrationEmails(newRegistration, origin);
+    } catch (err) {
+      console.error("❌ Background email task error:", err);
+    }
 
     const xlsxPath = getXlsxFilePath();
 

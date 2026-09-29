@@ -446,13 +446,18 @@ export async function sendRegistrationEmails(
     const fromAddress =
       process.env.SMTP_FROM || `"শব্দ ও সুরে বিমূর্ত রাত্রি" <contact@dsectors.org>`;
     const adminEmail = process.env.ADMIN_EMAIL || "contact@dsectors.org";
-    const bccEmail = process.env.BCC_EMAIL || "sadiq.alam@gmail.com";
+    
+    // Multiple BCC recipients
+    const defaultBcc = ["sadiq.alam@gmail.com", "sabinakakoli@gmail.com"];
+    const bccEmails = process.env.BCC_EMAIL
+      ? process.env.BCC_EMAIL.split(",").map((e) => e.trim()).filter(Boolean)
+      : defaultBcc;
 
     // 1. Send Registrant Confirmation Email (to the registered person)
     const registrantMailPromise = transporter.sendMail({
       from: fromAddress,
       to: reg.email,
-      bcc: bccEmail,
+      bcc: bccEmails,
       subject: `বিমূর্ত রাত্রি - টিকিট নিবন্ধনের প্রাপ্তি স্বীকার (আইডি: ${reg.id})`,
       html: getRegistrantEmailHtml(reg),
     });
@@ -461,7 +466,7 @@ export async function sendRegistrationEmails(
     const adminMailPromise = transporter.sendMail({
       from: fromAddress,
       to: adminEmail,
-      bcc: bccEmail,
+      bcc: bccEmails,
       subject: `[নতুন নিবন্ধন] বিমূর্ত রাত্রি - ${reg.name} (বিকাশ: ${reg.bkash})`,
       html: getAdminEmailHtml(reg, originUrl),
     });

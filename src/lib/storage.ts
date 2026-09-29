@@ -78,6 +78,19 @@ export function getRegistrations(): Registration[] {
 export function generateXlsxBuffer(items?: Registration[]): Buffer {
   const dataToExport = items || getRegistrations();
 
+  const columns = [
+    "SL",
+    "Registration ID",
+    "Date & Time",
+    "Name (নাম)",
+    "WhatsApp Number (হোয়াটসঅ্যাপ)",
+    "Email (ইমেইল)",
+    "bKash Number (বিকাশ নম্বর)",
+    "Status",
+    "Ticket Code",
+    "Notes",
+  ];
+
   // Prepare table data with proper columns for the user
   const rows = dataToExport.map((reg, index) => ({
     "SL": index + 1,
@@ -92,7 +105,7 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     "Notes": reg.notes || "",
   }));
 
-  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const worksheet = XLSX.utils.json_to_sheet(rows, { header: columns });
 
   // Set column widths for beautiful excel viewing
   worksheet["!cols"] = [

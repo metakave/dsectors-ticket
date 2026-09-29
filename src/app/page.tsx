@@ -42,36 +42,38 @@ export default function Home() {
           <RegistrationForm />
 
           {/* 5. Frequently Asked Questions (FAQ) & Guidelines */}
-          <div className="mt-12 gold-card rounded-2xl p-6 sm:p-8 border border-[#d4af37]/25 bg-[#071526]/80">
-            <div className="flex items-center gap-2 text-[#d4af37] mb-4">
-              <HelpCircle className="w-5 h-5" />
-              <h3 className="text-lg font-bold text-[#f8fafc]">জরুরি তথ্যাবলী ও প্রশ্নোত্তর</h3>
+          <div className="mt-12 gold-card rounded-2xl p-6 sm:p-9 border border-[#d4af37]/30 bg-[#071526]/85 shadow-xl">
+            <div className="flex items-center gap-2.5 text-[#d4af37] mb-6">
+              <HelpCircle className="w-6 h-6 text-[#e5c07b]" />
+              <h3 className="text-xl sm:text-2xl font-serif-bn font-bold text-[#f8fafc]">
+                জরুরি তথ্যাবলী ও প্রশ্নোত্তর
+              </h3>
             </div>
 
-            <div className="space-y-4 text-xs sm:text-sm text-slate-300">
-              <div className="border-b border-slate-800 pb-3">
-                <p className="font-semibold text-[#fef08a] mb-1">
-                  প্রশ্ন: আমি কখন ডিজিটাল টিকিট পাব?
+            <div className="space-y-5 text-sm sm:text-base text-slate-200">
+              <div className="border-b border-slate-800/80 pb-4">
+                <p className="font-bold text-[#fef08a] text-base sm:text-lg mb-1.5 flex items-center gap-2">
+                  <span>প্রশ্ন: আমি কখন ডিজিটাল টিকিট পাব?</span>
                 </p>
-                <p className="text-slate-400 leading-relaxed">
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                   উত্তর: ফর্ম সাবমিট করার পর আমাদের অ্যাডমিন টিম আপনার বিকাশ লেনদেনটি ম্যানুয়ালি যাচাই করবে। ভেরিফিকেশন সম্পন্ন হলে আপনার প্রদত্ত ইমেইল ঠিকানায় কিউআর/রেফারেন্স কোডসহ ডিজিটাল ই-টিকিট পৌঁছে যাবে।
                 </p>
               </div>
 
-              <div className="border-b border-slate-800 pb-3">
-                <p className="font-semibold text-[#fef08a] mb-1">
-                  প্রশ্ন: অনুষ্ঠানস্থলে কীভাবে টিকিট দেখাব?
+              <div className="border-b border-slate-800/80 pb-4">
+                <p className="font-bold text-[#fef08a] text-base sm:text-lg mb-1.5 flex items-center gap-2">
+                  <span>প্রশ্ন: অনুষ্ঠানস্থলে কীভাবে টিকিট দেখাব?</span>
                 </p>
-                <p className="text-slate-400 leading-relaxed">
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                   উত্তর: অনুষ্ঠানস্থলে প্রবেশের সময় আপনার স্মার্টফোনে ইমেইলে প্রাপ্ত ডিজিটাল টিকিট বা রেজিস্ট্রেশন আইডি দেখালেই প্রবেশাধিকার পাওয়া যাবে। প্রিন্ট করার প্রয়োজন নেই।
                 </p>
               </div>
 
               <div>
-                <p className="font-semibold text-[#fef08a] mb-1">
-                  প্রশ্ন: কোনো সহায়তা বা ভেরিফিকেশন সংক্রান্ত যোগাযোগ কীভাবে করব?
+                <p className="font-bold text-[#fef08a] text-base sm:text-lg mb-1.5 flex items-center gap-2">
+                  <span>প্রশ্ন: কোনো সহায়তা বা ভেরিফিকেশন সংক্রান্ত যোগাযোগ কীভাবে করব?</span>
                 </p>
-                <p className="text-slate-400 leading-relaxed">
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                   উত্তর: যেকোনো তথ্যের জন্য আমাদের সাপোর্ট নাম্বারে সরাসরি কল বা হোয়াটসঅ্যাপ করতে পারেন।
                 </p>
               </div>

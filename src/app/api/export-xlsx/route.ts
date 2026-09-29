@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { generateXlsxBuffer, getRegistrationsAsync } from "@/lib/storage";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const items = await getRegistrationsAsync();

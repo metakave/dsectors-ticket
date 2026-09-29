@@ -3,6 +3,9 @@ import { addRegistrationAsync, getXlsxFilePath } from "@/lib/storage";
 import { sendRegistrationEmails } from "@/lib/email";
 import { RegisterFormInput } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as RegisterFormInput;

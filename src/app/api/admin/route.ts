@@ -6,6 +6,9 @@ import {
 } from "@/lib/storage";
 import { TicketStatus } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const authHeader = req.headers.get("x-admin-passcode");

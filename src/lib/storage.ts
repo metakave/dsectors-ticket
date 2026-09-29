@@ -72,6 +72,7 @@ async function saveToVercelBlob(items: Registration[]): Promise<boolean> {
       access: "public",
       addRandomSuffix: false,
       allowOverwrite: true,
+      cacheControlMaxAge: 0,
       token,
       contentType: "application/json",
     });
@@ -81,6 +82,7 @@ async function saveToVercelBlob(items: Registration[]): Promise<boolean> {
       access: "public",
       addRandomSuffix: false,
       allowOverwrite: true,
+      cacheControlMaxAge: 0,
       token,
       contentType:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

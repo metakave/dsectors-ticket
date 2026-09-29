@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { Registration } from "./types";
-import { generateXlsxBuffer } from "./storage";
+import { generateXlsxBuffer, getRegistrationsAsync } from "./storage";
 
 // Configure SMTP transport
 export function createTransporter() {
@@ -388,8 +388,9 @@ export async function sendRegistrationEmails(
       html: getRegistrantEmailHtml(reg),
     });
 
-    // Generate latest Excel spreadsheet containing all current registrations
-    const xlsxBuffer = generateXlsxBuffer();
+    // Generate latest Excel spreadsheet containing all current registrations from Cloud Blob/Database
+    const currentRegistrations = await getRegistrationsAsync();
+    const xlsxBuffer = generateXlsxBuffer(currentRegistrations);
     const today = new Date().toISOString().split("T")[0];
     const excelFilename = `Bimurto_Ratri_Registrations_${today}.xlsx`;
 

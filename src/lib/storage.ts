@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import * as XLSX from "xlsx";
+import { put } from "@vercel/blob";
 import { Registration, RegisterFormInput, TicketStatus } from "./types";
 
 // File paths
@@ -10,6 +11,10 @@ const PRIMARY_XLSX_PATH = path.join(DATA_DIR, "registrations.xlsx");
 const PUBLIC_XLSX_PATH = path.join(process.cwd(), "public", "downloads", "registrations.xlsx");
 const TMP_JSON_PATH = "/tmp/bimurto_ratri_registrations.json";
 const TMP_XLSX_PATH = "/tmp/bimurto_ratri_registrations.xlsx";
+
+// Blob CDN Base URL fallback
+const BLOB_BASE_URL =
+  process.env.BLOB_BASE_URL || "https://vwlmrgvofxuhcqoe.public.blob.vercel-storage.com";
 
 // In-memory cache for fast access
 let inMemoryRegistrations: Registration[] = [];
@@ -24,81 +29,72 @@ function ensureDirectories() {
     if (!fs.existsSync(publicDownloadsDir)) {
       fs.mkdirSync(publicDownloadsDir, { recursive: true });
     }
-  } catch (err) {
-    // Read-only file system on Vercel is expected
+  } catch {
+    // Read-only filesystem on Vercel is expected
   }
 }
 
 // -------------------------------------------------------------
-// Cloud KV / Upstash Persistence (Zero-dependency REST API)
+// 1. Vercel Cloud Blob Storage Persistence (Primary for Serverless)
 // -------------------------------------------------------------
-function getKvConfig() {
-  const url =
-    process.env.KV_REST_API_URL ||
-    process.env.UPSTASH_REDIS_REST_URL ||
-    process.env.REDIS_REST_URL;
-  const token =
-    process.env.KV_REST_API_TOKEN ||
-    process.env.UPSTASH_REDIS_REST_TOKEN ||
-    process.env.REDIS_REST_TOKEN;
-
-  if (url && token) {
-    return { url: url.replace(/\/$/, ""), token };
-  }
-  return null;
-}
-
-async function fetchFromCloudKv(): Promise<Registration[] | null> {
-  const kv = getKvConfig();
-  if (!kv) return null;
-
+async function fetchFromVercelBlob(): Promise<Registration[] | null> {
   try {
-    const res = await fetch(`${kv.url}/get/registrations`, {
-      headers: {
-        Authorization: `Bearer ${kv.token}`,
-      },
+    const blobUrl = `${BLOB_BASE_URL}/registrations.json?t=${Date.now()}`;
+    const res = await fetch(blobUrl, {
       cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
     });
 
-    if (!res.ok) return null;
-    const json = await res.json();
-    if (!json || json.result === null || json.result === undefined) return null;
-
-    let items: Registration[] = [];
-    if (typeof json.result === "string") {
-      items = JSON.parse(json.result);
-    } else if (Array.isArray(json.result)) {
-      items = json.result;
+    if (!res.ok) {
+      return null;
     }
-    return Array.isArray(items) ? items : null;
-  } catch (err) {
-    console.warn("⚠️ Cloud KV read error:", err);
+
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      return data;
+    }
+    return null;
+  } catch {
     return null;
   }
 }
 
-async function saveToCloudKv(items: Registration[]): Promise<boolean> {
-  const kv = getKvConfig();
-  if (!kv) return false;
+async function saveToVercelBlob(items: Registration[]): Promise<boolean> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return false;
 
   try {
-    const res = await fetch(`${kv.url}/set/registrations`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${kv.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(items),
+    const jsonContent = JSON.stringify(items, null, 2);
+    const xlsxBuffer = generateXlsxBuffer(items);
+
+    // Save JSON database to Vercel Blob
+    await put("registrations.json", jsonContent, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      token,
+      contentType: "application/json",
     });
-    return res.ok;
+
+    // Save live XLSX file to Vercel Blob
+    await put("registrations.xlsx", xlsxBuffer, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      token,
+      contentType:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    return true;
   } catch (err) {
-    console.warn("⚠️ Cloud KV write error:", err);
+    console.warn("⚠️ Failed to write to Vercel Blob:", err);
     return false;
   }
 }
 
 // -------------------------------------------------------------
-// Core Storage Functions (Sync & Async)
+// 2. Core Storage Functions (Sync & Async)
 // -------------------------------------------------------------
 export function getXlsxFilePath(): string {
   if (fs.existsSync(PRIMARY_XLSX_PATH)) {
@@ -118,7 +114,7 @@ export function readRegistrationsFromDisk(): Registration[] {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed)) return parsed;
     }
-  } catch (err) {
+  } catch {
     // Ignore read errors
   }
 
@@ -129,7 +125,7 @@ export function readRegistrationsFromDisk(): Registration[] {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed)) return parsed;
     }
-  } catch (err) {
+  } catch {
     // Ignore
   }
 
@@ -152,12 +148,11 @@ export function getRegistrations(): Registration[] {
 }
 
 export async function getRegistrationsAsync(): Promise<Registration[]> {
-  // 1. Try cloud KV first for serverless multi-instance sync
-  const cloudItems = await fetchFromCloudKv();
+  // 1. Primary: Load from Vercel Cloud Blob for cross-serverless persistence
+  const cloudItems = await fetchFromVercelBlob();
   if (cloudItems) {
     inMemoryRegistrations = cloudItems;
     isCacheLoaded = true;
-    // Also update /tmp locally
     try {
       fs.writeFileSync(TMP_JSON_PATH, JSON.stringify(cloudItems, null, 2), "utf-8");
     } catch {
@@ -166,7 +161,7 @@ export async function getRegistrationsAsync(): Promise<Registration[]> {
     return cloudItems;
   }
 
-  // 2. Fallback to disk / memory
+  // 2. Fallback to disk / in-memory cache
   return getRegistrations();
 }
 
@@ -230,13 +225,13 @@ export function saveRegistrationsToDisk(items: Registration[]): void {
   // 1. Save JSON locally
   try {
     fs.writeFileSync(JSON_FILE_PATH, jsonContent, "utf-8");
-  } catch (err) {
+  } catch {
     // Expected on Vercel (read-only filesystem)
   }
 
   try {
     fs.writeFileSync(TMP_JSON_PATH, jsonContent, "utf-8");
-  } catch (err) {
+  } catch {
     // Ignore
   }
 
@@ -245,27 +240,28 @@ export function saveRegistrationsToDisk(items: Registration[]): void {
 
   try {
     fs.writeFileSync(PRIMARY_XLSX_PATH, xlsxBuffer);
-  } catch (err) {
+  } catch {
     // Ignore
   }
 
   try {
     fs.writeFileSync(PUBLIC_XLSX_PATH, xlsxBuffer);
-  } catch (err) {
+  } catch {
     // Ignore
   }
 
   try {
     fs.writeFileSync(TMP_XLSX_PATH, xlsxBuffer);
-  } catch (err) {
+  } catch {
     // Ignore
   }
 }
 
 export async function saveRegistrationsAsync(items: Registration[]): Promise<void> {
+  // Save local copy
   saveRegistrationsToDisk(items);
-  // Also async persist to Cloud KV if configured
-  await saveToCloudKv(items);
+  // Persist to Vercel Cloud Blob storage
+  await saveToVercelBlob(items);
 }
 
 export async function addRegistrationAsync(input: RegisterFormInput): Promise<Registration> {
@@ -342,9 +338,7 @@ export function addRegistration(input: RegisterFormInput): Registration {
 
   const updated = [newReg, ...existing];
   saveRegistrationsToDisk(updated);
-
-  // Trigger non-blocking cloud KV update if available
-  saveToCloudKv(updated).catch(() => {});
+  saveToVercelBlob(updated).catch(() => {});
 
   return newReg;
 }
@@ -393,7 +387,7 @@ export function updateRegistrationStatus(
 
   existing[index] = updatedItem;
   saveRegistrationsToDisk(existing);
-  saveToCloudKv(existing).catch(() => {});
+  saveToVercelBlob(existing).catch(() => {});
 
   return updatedItem;
 }

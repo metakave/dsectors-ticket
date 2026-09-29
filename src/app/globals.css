@@ -1,26 +1,133 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary-navy: #071526;
+  --secondary-navy: #0d223f;
+  --card-bg: rgba(10, 26, 48, 0.85);
+  --gold-accent: #d4af37;
+  --gold-glow: #e5c07b;
+  --gold-light: #fdf5e6;
+  --font-sans: var(--font-hind), sans-serif;
+  --font-serif: var(--font-noto-serif), serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #06111f;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(13, 34, 63, 0.9) 0%, rgba(6, 17, 31, 0.98) 60%),
+    radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 15% 70%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: #f1f5f9;
+  font-family: var(--font-sans);
+}
+
+.font-serif-bn {
+  font-family: var(--font-serif);
+}
+
+.font-sans-bn {
+  font-family: var(--font-sans);
+}
+
+/* Glassmorphism & Gold Glow Cards */
+.gold-card {
+  background: rgba(10, 24, 46, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6),
+              0 0 25px 0 rgba(212, 175, 55, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gold-card-hover:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 15px 45px -10px rgba(0, 0, 0, 0.7),
+              0 0 35px 0 rgba(212, 175, 55, 0.12);
+}
+
+.gold-border-glow {
+  border: 1px solid #d4af37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #fff2cc 0%, #e5c07b 50%, #c9933b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #c5972c 50%, #a67c1e 100%);
+  color: #071526;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.gold-btn:hover {
+  background: linear-gradient(135deg, #e6c152 0%, #d4a339 50%, #b88b22 100%);
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.45);
+  transform: translateY(-1px);
+}
+
+.gold-btn:active {
+  transform: translateY(0);
+}
+
+/* Custom form inputs */
+.form-input {
+  background: rgba(6, 17, 31, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #f8fafc;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2), 0 0 15px rgba(212, 175, 55, 0.1);
+  background: rgba(8, 22, 40, 0.95);
+}
+
+.form-input::placeholder {
+  color: #64748b;
+}
+
+/* Subtle Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(212, 175, 55, 0.15) 50%,
+    rgba(212, 175, 55, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+/* Pulse Glow */
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.03);
+  }
+}
+
+.animate-pulse-glow {
+  animation: subtle-pulse 4s ease-in-out infinite;
 }

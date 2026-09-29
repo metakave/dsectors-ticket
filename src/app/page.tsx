@@ -1,69 +1,118 @@
-import Image from "next/image";
+import HeroSection from "@/components/HeroSection";
+import PaymentInstruction from "@/components/PaymentInstruction";
+import RegistrationForm from "@/components/RegistrationForm";
+import { Sparkles, Music, Mic2, HelpCircle, Shield, Download, Lock } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="relative overflow-hidden min-h-screen">
+      {/* Decorative Top Accent Light */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-radial from-[#d4af37]/15 via-[#0d223f]/20 to-transparent pointer-events-none -z-10 blur-2xl" />
+
+      {/* Main Container */}
+      <main className="relative z-10">
+        {/* 1. Hero Section with Banner Image */}
+        <HeroSection />
+
+        {/* 2. Content & Form Section */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          {/* Artistic Introduction Card */}
+          <div className="gold-card rounded-2xl p-6 sm:p-8 border border-[#d4af37]/30 bg-[#091b33]/70 text-center mb-8">
+            <div className="flex items-center justify-center gap-3 text-[#d4af37] mb-2">
+              <Music className="w-5 h-5" />
+              <span className="text-xs uppercase tracking-widest font-semibold">
+                গান • কবিতা • আড্ডা
+              </span>
+              <Mic2 className="w-5 h-5" />
+            </div>
+            
+            <h2 className="text-xl sm:text-2xl font-serif-bn font-bold text-[#fef08a] mb-3">
+              গান, কবিতা ও আড্ডায় আপনাকে আন্তরিক আমন্ত্রণ
+            </h2>
+            
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+              শব্দ ও সুরের এক অনন্য মেলবন্ধনে অনুষ্ঠিত হতে যাচ্ছে <strong className="text-[#fef3c7]">"বিমূর্ত রাত্রি"</strong>। আবৃত্তি, সুরের মূর্ছনা এবং প্রিয়জনদের সান্নিধ্যে মুখরিত হতে আপনার আসনটি এখনি অগ্রিম নিশ্চিত করুন।
+            </p>
+          </div>
+
+          {/* 3. bKash Payment Instruction */}
+          <PaymentInstruction />
+
+          {/* 4. Bengali Registration Form */}
+          <RegistrationForm />
+
+          {/* 5. Frequently Asked Questions (FAQ) & Guidelines */}
+          <div className="mt-12 gold-card rounded-2xl p-6 sm:p-8 border border-[#d4af37]/25 bg-[#071526]/80">
+            <div className="flex items-center gap-2 text-[#d4af37] mb-4">
+              <HelpCircle className="w-5 h-5" />
+              <h3 className="text-lg font-bold text-[#f8fafc]">জরুরি তথ্যাবলী ও প্রশ্নোত্তর</h3>
+            </div>
+
+            <div className="space-y-4 text-xs sm:text-sm text-slate-300">
+              <div className="border-b border-slate-800 pb-3">
+                <p className="font-semibold text-[#fef08a] mb-1">
+                  প্রশ্ন: আমি কখন ডিজিটাল টিকিট পাব?
+                </p>
+                <p className="text-slate-400 leading-relaxed">
+                  উত্তর: ফর্ম সাবমিট করার পর আমাদের অ্যাডমিন টিম আপনার বিকাশ লেনদেনটি ম্যানুয়ালি যাচাই করবে। ভেরিফিকেশন সম্পন্ন হলে আপনার প্রদত্ত ইমেইল ঠিকানায় কিউআর/রেফারেন্স কোডসহ ডিজিটাল ই-টিকিট পৌঁছে যাবে।
+                </p>
+              </div>
+
+              <div className="border-b border-slate-800 pb-3">
+                <p className="font-semibold text-[#fef08a] mb-1">
+                  প্রশ্ন: অনুষ্ঠানস্থলে কীভাবে টিকিট দেখাব?
+                </p>
+                <p className="text-slate-400 leading-relaxed">
+                  উত্তর: অনুষ্ঠানস্থলে প্রবেশের সময় আপনার স্মার্টফোনে ইমেইলে প্রাপ্ত ডিজিটাল টিকিট বা রেজিস্ট্রেশন আইডি দেখালেই প্রবেশাধিকার পাওয়া যাবে। প্রিন্ট করার প্রয়োজন নেই।
+                </p>
+              </div>
+
+              <div>
+                <p className="font-semibold text-[#fef08a] mb-1">
+                  প্রশ্ন: কোনো সহায়তা বা ভেরিফিকেশন সংক্রান্ত যোগাযোগ কীভাবে করব?
+                </p>
+                <p className="text-slate-400 leading-relaxed">
+                  উত্তর: যেকোনো তথ্যের জন্য আমাদের সাপোর্ট নাম্বারে সরাসরি কল বা হোয়াটসঅ্যাপ করতে পারেন।
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-[#d4af37]/20 bg-[#030914] py-8 text-center text-xs text-slate-400">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-left">
+            <p className="font-bold text-[#fef08a] text-sm">শব্দ ও সুরে বিমূর্ত রাত্রি ২০২৬</p>
+            <p className="text-slate-400 text-xs mt-0.5">আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা</p>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs">
+            <Link
+              href="/admin"
+              className="text-slate-400 hover:text-[#d4af37] flex items-center gap-1.5 transition-colors"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>অ্যাডমিন প্যানেল</span>
+            </Link>
+
+            <a
+              href="/api/export-xlsx"
+              download
+              className="text-slate-400 hover:text-[#d4af37] flex items-center gap-1.5 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Excel ডাউনলোড (.xlsx)</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-4 border-t border-slate-900 text-slate-500 text-[11px]">
+          © ২০২৬ বিমূর্ত রাত্রি। সর্বস্বত্ব সংরক্ষিত। Vercel সার্ভারলেস ও ফাস্ট-লোডিং আর্কিটেকচারে তৈরি।
+        </div>
+      </footer>
     </div>
   );
 }

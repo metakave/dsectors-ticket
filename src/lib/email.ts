@@ -443,21 +443,25 @@ export async function sendRegistrationEmails(
       return { success: true };
     }
 
-    const fromAddress = process.env.SMTP_FROM || `"বিমূর্ত রাত্রি" <noreply@bimurtoratri.com>`;
-    const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "admin@bimurtoratri.com";
+    const fromAddress =
+      process.env.SMTP_FROM || `"শব্দ ও সুরে বিমূর্ত রাত্রি" <contact@dsectors.org>`;
+    const adminEmail = process.env.ADMIN_EMAIL || "contact@dsectors.org";
+    const bccEmail = process.env.BCC_EMAIL || "sadiq.alam@gmail.com";
 
-    // 1. Send Registrant Confirmation Email
+    // 1. Send Registrant Confirmation Email (to the registered person)
     const registrantMailPromise = transporter.sendMail({
       from: fromAddress,
       to: reg.email,
+      bcc: bccEmail,
       subject: `বিমূর্ত রাত্রি - টিকিট নিবন্ধনের প্রাপ্তি স্বীকার (আইডি: ${reg.id})`,
       html: getRegistrantEmailHtml(reg),
     });
 
-    // 2. Send Admin Notification Email
+    // 2. Send Separate Admin Notification Email (to contact@dsectors.org)
     const adminMailPromise = transporter.sendMail({
       from: fromAddress,
       to: adminEmail,
+      bcc: bccEmail,
       subject: `[নতুন নিবন্ধন] বিমূর্ত রাত্রি - ${reg.name} (বিকাশ: ${reg.bkash})`,
       html: getAdminEmailHtml(reg, originUrl),
     });

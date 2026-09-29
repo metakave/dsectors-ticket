@@ -32,7 +32,40 @@ export default function AdminPanel() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Email Diagnostic State
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [testEmailAddress, setTestEmailAddress] = useState("sadiq.alam@gmail.com");
+  const [isTestingEmail, setIsTestingEmail] = useState(false);
+  const [emailTestResult, setEmailTestResult] = useState<any | null>(null);
+
   const [, startTransition] = useTransition();
+
+  const handleTestEmail = async () => {
+    setIsTestingEmail(true);
+    setEmailTestResult(null);
+    try {
+      const res = await fetch("/api/admin/test-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-passcode": passcode || "admin123",
+        },
+        body: JSON.stringify({
+          targetEmail: testEmailAddress,
+          templateType: "both",
+        }),
+      });
+      const data = await res.json();
+      setEmailTestResult(data);
+    } catch (err: any) {
+      setEmailTestResult({
+        success: false,
+        error: err?.message || "নেটওয়ার্ক অনুরোধ ব্যর্থ হয়েছে",
+      });
+    } finally {
+      setIsTestingEmail(false);
+    }
+  };
 
   const fetchRegistrations = async (enteredPasscode = passcode) => {
     setIsLoading(true);
@@ -203,6 +236,14 @@ export default function AdminPanel() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setShowEmailModal(true)}
+            className="cursor-pointer px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-[#38bdf8] text-xs sm:text-sm font-semibold flex items-center gap-2 border border-sky-500/30 transition-colors"
+          >
+            <Mail className="w-4 h-4 text-sky-400" />
+            <span>ইমেইল টেস্ট (Test SMTP)</span>
+          </button>
+
           <button
             onClick={() => fetchRegistrations(passcode)}
             disabled={isLoading}
@@ -448,6 +489,126 @@ export default function AdminPanel() {
           </table>
         </div>
       </div>
+
+      {/* Email Test & Diagnostic Modal */}
+      {showEmailModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="gold-card rounded-2xl p-6 sm:p-7 max-w-xl w-full border border-[#d4af37]/40 bg-[#07172c] text-left shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-700/60 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#fef08a]">ইমেইল ডেলিভারি ও SMTP টেস্ট</h3>
+                  <p className="text-xs text-slate-400">Gmail SMTP কানেকশন ও লাইভ ডেলিভারি ভেরিফিকেশন</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  টেস্ট প্রাপক ইমেইল (Recipient Email Address):
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={testEmailAddress}
+                    onChange={(e) => setTestEmailAddress(e.target.value)}
+                    placeholder="sadiq.alam@gmail.com"
+                    className="form-input flex-1 px-3.5 py-2.5 rounded-xl text-sm font-mono text-slate-100"
+                  />
+                  <button
+                    onClick={handleTestEmail}
+                    disabled={isTestingEmail || !testEmailAddress}
+                    className="gold-btn cursor-pointer px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap"
+                  >
+                    {isTestingEmail ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>পাঠানো হচ্ছে...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="w-4 h-4" />
+                        <span>টেস্ট পাঠান</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Live Test Result Box */}
+              {emailTestResult && (
+                <div
+                  className={`p-4 rounded-xl border text-xs sm:text-sm ${
+                    emailTestResult.success
+                      ? "bg-emerald-950/40 border-emerald-500/50 text-emerald-200"
+                      : "bg-rose-950/40 border-rose-500/50 text-rose-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-bold mb-2">
+                    {emailTestResult.success ? (
+                      <>
+                        <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>{emailTestResult.message}</span>
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                        <span>{emailTestResult.error || "টেস্ট ব্যর্থ হয়েছে"}</span>
+                      </>
+                    )}
+                  </div>
+
+                  {emailTestResult.config && (
+                    <div className="mt-2 pt-2 border-t border-slate-700/50 font-mono text-[11px] text-slate-300 space-y-1">
+                      <div>SMTP Server: {emailTestResult.config.host}:{emailTestResult.config.port}</div>
+                      <div>Sender User: {emailTestResult.config.user}</div>
+                    </div>
+                  )}
+
+                  {emailTestResult.dispatchResults && (
+                    <div className="mt-3 space-y-1.5">
+                      {emailTestResult.dispatchResults.map((r: any, idx: number) => (
+                        <div
+                          key={idx}
+                          className="bg-black/30 p-2 rounded-lg font-mono text-[11px] text-slate-200 border border-slate-700/40"
+                        >
+                          <div className="font-bold text-[#fef08a]">{r.template}</div>
+                          <div>To: {r.to}</div>
+                          {r.messageId && <div className="text-emerald-400">ID: {r.messageId}</div>}
+                          {r.error && <div className="text-rose-400">Error: {r.error}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11.5px] text-slate-400 leading-relaxed">
+                💡 <strong>টিপস:</strong> টিকিট নিবন্ধন সম্পন্ন হওয়ার সাথে সাথেই ব্যবহারকারীর ইমেইলে কনফার্মেশন কপি এবং আয়োজকদের ইমেইলে নোটিফিকেশন চলে যাবে।
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowEmailModal(false)}
+                className="cursor-pointer px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition-colors"
+              >
+                বন্ধ করুন
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { Registration } from "./types";
 
 // Configure SMTP transport
-function createTransporter() {
+export function createTransporter() {
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT) || 465;
   const user = process.env.SMTP_USER;
@@ -23,7 +23,42 @@ function createTransporter() {
     tls: {
       rejectUnauthorized: false,
     },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    socketTimeout: 20000,
   });
+}
+
+// 1. Registrant Confirmation Plain Text Fallback
+export function getRegistrantEmailText(reg: Registration): string {
+  return `বিমূর্ত রাত্রি - টিকিট নিবন্ধনের প্রাপ্তি স্বীকার
+
+নমস্কার / প্রিয় ${reg.name},
+
+"শব্দ ও সুরে বিমূর্ত রাত্রি" অনুষ্ঠানে আপনার টিকিট নিবন্ধন সফলভাবে গ্রহণ করা হয়েছে।
+
+⏳ পেমেন্ট যাচাই প্রক্রিয়াধীন:
+আপনার প্রেরিত বিকাশ নম্বর (${reg.bkash}) হতে ফি প্রাপ্তি ম্যানুয়ালি যাচাই করার পর অতি শীঘ্রই আপনার এই ইমেইলে ডিজিটাল টিকিট প্রেরণ করা হবে।
+
+📋 নিবন্ধন বিবরণী (Registration Summary):
+- রেজিস্ট্রেশন আইডি: ${reg.id}
+- আবেদনকারীর নাম: ${reg.name}
+- হোয়াটসঅ্যাপ নম্বর: ${reg.whatsapp}
+- ইমেইল ঠিকানা: ${reg.email}
+- প্রেরক বিকাশ নম্বর: ${reg.bkash}
+- টিকিট ফি: ৳ ৫০০
+- বর্তমান স্ট্যাটাস: পেমেন্ট ভেরিফিকেশন সাপেক্ষে (Pending)
+
+📍 অনুষ্ঠান সূচি ও ভেন্যু:
+- তারিখ: ৯ অক্টোবর ২০২৬ (শুক্রবার)
+- সময়: সন্ধ্যা ৬:৩০ টা - ৮:৩০ টা
+- স্থান: আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা
+
+যেকোনো তথ্যের জন্য আমাদের সাপোর্ট নাম্বারে সরাসরি কল বা হোয়াটসঅ্যাপ করতে পারেন।
+
+আন্তরিক ধন্যবাদসহ,
+শব্দ ও সুরে বিমূর্ত রাত্রি আয়োজক কমিটি
+`;
 }
 
 // 1. Registrant Confirmation Email Template (High Contrast & Maximum Email Client Compatibility)
@@ -174,6 +209,29 @@ export function getRegistrantEmailHtml(reg: Registration): string {
   `;
 }
 
+// 2. Admin Notification Plain Text Fallback
+export function getAdminEmailText(reg: Registration, siteUrl: string): string {
+  const adminUrl = `${siteUrl}/admin`;
+  const downloadUrl = `${siteUrl}/api/export-xlsx`;
+
+  return `🚨 [নতুন নিবন্ধন] বিমূর্ত রাত্রি - ${reg.name} (বিকাশ: ${reg.bkash})
+
+নতুন টিকিট নিবন্ধন জমা পড়েছে:
+- রেজিস্ট্রেশন আইডি: ${reg.id}
+- তারিখ ও সময়: ${reg.formattedDate}
+- আবেদনকারীর নাম: ${reg.name}
+- হোয়াটসঅ্যাপ নম্বর: ${reg.whatsapp}
+- ইমেইল: ${reg.email}
+- বিকাশ নম্বর: ${reg.bkash}
+- স্ট্যাটাস: ${reg.status}
+
+অ্যাকশন দরকার: উল্লিখিত বিকাশ নম্বর থেকে টাকা প্রাপ্তি যাচাই করে টিকিট প্রেরণ নিশ্চিত করুন।
+
+অ্যাডমিন ড্যাশবোর্ড: ${adminUrl}
+Excel ডাউনলোড: ${downloadUrl}
+`;
+}
+
 // 2. Admin Notification Email Template (High Contrast & Clear Details)
 export function getAdminEmailHtml(reg: Registration, siteUrl: string): string {
   const adminUrl = `${siteUrl}/admin`;
@@ -280,7 +338,7 @@ export function getAdminEmailHtml(reg: Registration, siteUrl: string): string {
 // Send Registration Emails (both to Admin and Registrant)
 export async function sendRegistrationEmails(
   reg: Registration,
-  originUrl = "http://localhost:3000"
+  originUrl = "https://ticket.dsectors.org"
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const transporter = createTransporter();
@@ -295,43 +353,70 @@ export async function sendRegistrationEmails(
       return { success: true };
     }
 
-    const fromAddress =
-      process.env.SMTP_FROM || `"শব্দ ও সুরে বিমূর্ত রাত্রি" <${process.env.SMTP_USER || "contact@dsectors.org"}>`;
-    const adminEmail = process.env.ADMIN_EMAIL || "contact@dsectors.org";
+    const senderName = "শব্দ ও সুরে বিমূর্ত রাত্রি";
+    const senderEmail = process.env.SMTP_USER || "contact@dsectors.org";
+    const from = {
+      name: senderName,
+      address: senderEmail,
+    };
+    const replyTo = process.env.REPLY_TO || process.env.ADMIN_EMAIL || senderEmail;
+    const adminEmail = (process.env.ADMIN_EMAIL || "contact@dsectors.org").trim();
 
     // Multiple BCC recipients
     const defaultBcc = ["sadiq.alam@gmail.com", "sabinakakoli@gmail.com"];
-    const bccEmails = process.env.BCC_EMAIL
+    const configuredBcc = process.env.BCC_EMAIL
       ? process.env.BCC_EMAIL.split(",").map((e) => e.trim()).filter(Boolean)
       : defaultBcc;
 
+    // Deduplicate and filter out to-recipients from BCC to avoid SMTP rejection/spam flagging
+    const registrantBcc = configuredBcc.filter(
+      (e) => e.toLowerCase() !== reg.email.toLowerCase()
+    );
+    const adminBcc = configuredBcc.filter(
+      (e) => e.toLowerCase() !== adminEmail.toLowerCase()
+    );
+
     // 1. Send Registrant Confirmation Email (to the registered person)
     const registrantMailPromise = transporter.sendMail({
-      from: fromAddress,
+      from,
+      replyTo,
       to: reg.email,
-      bcc: bccEmails,
+      bcc: registrantBcc.length > 0 ? registrantBcc : undefined,
       subject: `বিমূর্ত রাত্রি - টিকিট নিবন্ধনের প্রাপ্তি স্বীকার (আইডি: ${reg.id})`,
+      text: getRegistrantEmailText(reg),
       html: getRegistrantEmailHtml(reg),
     });
 
     // 2. Send Separate Admin Notification Email (to contact@dsectors.org)
     const adminMailPromise = transporter.sendMail({
-      from: fromAddress,
+      from,
+      replyTo,
       to: adminEmail,
-      bcc: bccEmails,
+      bcc: adminBcc.length > 0 ? adminBcc : undefined,
       subject: `[নতুন নিবন্ধন] বিমূর্ত রাত্রি - ${reg.name} (বিকাশ: ${reg.bkash})`,
+      text: getAdminEmailText(reg, originUrl),
       html: getAdminEmailHtml(reg, originUrl),
     });
 
     const results = await Promise.allSettled([registrantMailPromise, adminMailPromise]);
+    let hasFailure = false;
+    const errors: string[] = [];
+
     results.forEach((result, idx) => {
       const type = idx === 0 ? "Registrant Email" : "Admin Notification";
       if (result.status === "fulfilled") {
         console.log(`✅ ${type} sent successfully. MessageId: ${result.value.messageId}`);
       } else {
+        hasFailure = true;
+        const msg = (result.reason as Error)?.message || String(result.reason);
+        errors.push(`${type}: ${msg}`);
         console.error(`❌ ${type} failed to send:`, result.reason);
       }
     });
+
+    if (hasFailure) {
+      return { success: false, error: errors.join(" | ") };
+    }
 
     return { success: true };
   } catch (err) {

@@ -1,8 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import PaymentInstruction from "@/components/PaymentInstruction";
 import RegistrationForm from "@/components/RegistrationForm";
-import { Sparkles, Music, Mic2, HelpCircle, Shield, Download, Lock } from "lucide-react";
-import Link from "next/link";
+import { Music, Mic2, HelpCircle } from "lucide-react";
 
 export default function Home() {
   return (
@@ -83,34 +82,15 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-[#d4af37]/20 bg-[#030914] py-8 text-center text-xs text-slate-400">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-left">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div>
             <p className="font-bold text-[#fef08a] text-sm">শব্দ ও সুরে বিমূর্ত রাত্রি ২০২৬</p>
             <p className="text-slate-400 text-xs mt-0.5">আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা</p>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
-            <Link
-              href="/admin"
-              className="text-slate-400 hover:text-[#d4af37] flex items-center gap-1.5 transition-colors"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>অ্যাডমিন প্যানেল</span>
-            </Link>
-
-            <a
-              href="/api/export-xlsx"
-              download
-              className="text-slate-400 hover:text-[#d4af37] flex items-center gap-1.5 transition-colors"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Excel ডাউনলোড (.xlsx)</span>
-            </a>
-          </div>
-        </div>
-
-        <div className="mt-6 pt-4 border-t border-slate-900 text-slate-500 text-[11px]">
-          © ২০২৬ বিমূর্ত রাত্রি। সর্বস্বত্ব সংরক্ষিত। Vercel সার্ভারলেস ও ফাস্ট-লোডিং আর্কিটেকচারে তৈরি।
+          <p className="text-slate-500 text-[11px]">
+            © ২০২৬ বিমূর্ত রাত্রি। সর্বস্বত্ব সংরক্ষিত।
+          </p>
         </div>
       </footer>
     </div>

@@ -30,35 +30,35 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Event Details Quick Bar */}
+      {/* Event Details Quick Bar with enlarged typography */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 max-w-4xl mx-auto">
-        <div className="gold-card rounded-xl p-4 flex items-center justify-center sm:justify-start gap-3.5 border border-[#d4af37]/30 bg-[#0a1b30]/80">
-          <div className="w-10 h-10 rounded-lg bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
-            <Calendar className="w-5 h-5" />
+        <div className="gold-card rounded-xl p-4 sm:p-5 flex items-center justify-center sm:justify-start gap-4 border border-[#d4af37]/30 bg-[#0a1b30]/80">
+          <div className="w-12 h-12 rounded-xl bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
+            <Calendar className="w-6 h-6" />
           </div>
           <div className="text-left">
-            <p className="text-xs text-[#94a3b8] font-medium">অনুষ্ঠানের তারিখ</p>
-            <p className="text-sm sm:text-base font-semibold text-[#f8fafc]">৯ অক্টোবর ২০২৬ (শুক্রবার)</p>
+            <p className="text-xs sm:text-sm text-[#94a3b8] font-medium">অনুষ্ঠানের তারিখ</p>
+            <p className="text-base sm:text-lg font-bold text-[#f8fafc]">৯ অক্টোবর ২০২৬ (শুক্রবার)</p>
           </div>
         </div>
 
-        <div className="gold-card rounded-xl p-4 flex items-center justify-center sm:justify-start gap-3.5 border border-[#d4af37]/30 bg-[#0a1b30]/80">
-          <div className="w-10 h-10 rounded-lg bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
-            <Clock className="w-5 h-5" />
+        <div className="gold-card rounded-xl p-4 sm:p-5 flex items-center justify-center sm:justify-start gap-4 border border-[#d4af37]/30 bg-[#0a1b30]/80">
+          <div className="w-12 h-12 rounded-xl bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
+            <Clock className="w-6 h-6" />
           </div>
           <div className="text-left">
-            <p className="text-xs text-[#94a3b8] font-medium">নির্ধারিত সময়</p>
-            <p className="text-sm sm:text-base font-semibold text-[#f8fafc]">সন্ধ্যা ৬:৩০ - ৮:৩০ টা</p>
+            <p className="text-xs sm:text-sm text-[#94a3b8] font-medium">নির্ধারিত সময়</p>
+            <p className="text-base sm:text-lg font-bold text-[#f8fafc]">সন্ধ্যা ৬:৩০ - ৮:৩০ টা</p>
           </div>
         </div>
 
-        <div className="gold-card rounded-xl p-4 flex items-center justify-center sm:justify-start gap-3.5 border border-[#d4af37]/30 bg-[#0a1b30]/80">
-          <div className="w-10 h-10 rounded-lg bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
-            <MapPin className="w-5 h-5" />
+        <div className="gold-card rounded-xl p-4 sm:p-5 flex items-center justify-center sm:justify-start gap-4 border border-[#d4af37]/30 bg-[#0a1b30]/80">
+          <div className="w-12 h-12 rounded-xl bg-[#d4af37]/15 flex items-center justify-center text-[#e5c07b] shrink-0">
+            <MapPin className="w-6 h-6" />
           </div>
           <div className="text-left">
-            <p className="text-xs text-[#94a3b8] font-medium">অনুষ্ঠানস্থল</p>
-            <p className="text-sm sm:text-base font-semibold text-[#f8fafc] leading-tight">আহারী বাহার, ধানমন্ডি ২৭, ঢাকা</p>
+            <p className="text-xs sm:text-sm text-[#94a3b8] font-medium">অনুষ্ঠানস্থল</p>
+            <p className="text-base sm:text-lg font-bold text-[#f8fafc] leading-tight">আহারী বাহার, ধানমন্ডি ২৭, ঢাকা</p>
           </div>
         </div>
       </div>
@@ -67,11 +67,11 @@ export default function HeroSection() {
       <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
         <button
           onClick={scrollToForm}
-          className="gold-btn cursor-pointer px-8 py-3.5 rounded-xl font-bold text-base flex items-center gap-2.5 shadow-lg group"
+          className="gold-btn cursor-pointer px-9 py-4 rounded-xl font-bold text-lg sm:text-xl flex items-center gap-3 shadow-xl group"
         >
           <Sparkles className="w-5 h-5 transition-transform group-hover:rotate-12" />
           <span>অনলাইনে টিকিট নিবন্ধন করুন</span>
-          <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+          <ChevronDown className="w-5 h-5 transition-transform group-hover:translate-y-0.5" />
         </button>
       </div>
     </section>

@@ -17,21 +17,21 @@ export default function Home() {
         {/* 2. Content & Form Section */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
           {/* Artistic Introduction Card */}
-          <div className="gold-card rounded-2xl p-6 sm:p-8 border border-[#d4af37]/30 bg-[#091b33]/70 text-center mb-8">
-            <div className="flex items-center justify-center gap-3 text-[#d4af37] mb-2">
+          <div className="gold-card rounded-2xl p-7 sm:p-9 border border-[#d4af37]/30 bg-[#091b33]/70 text-center mb-8">
+            <div className="flex items-center justify-center gap-3 text-[#d4af37] mb-3">
               <Music className="w-5 h-5" />
-              <span className="text-xs uppercase tracking-widest font-semibold">
+              <span className="text-sm sm:text-base uppercase tracking-widest font-bold text-[#e5c07b]">
                 গান • কবিতা • আড্ডা
               </span>
               <Mic2 className="w-5 h-5" />
             </div>
             
-            <h2 className="text-xl sm:text-2xl font-serif-bn font-bold text-[#fef08a] mb-3">
+            <h2 className="text-2xl sm:text-3xl font-serif-bn font-bold text-[#fef08a] mb-3.5 leading-snug">
               গান, কবিতা ও আড্ডায় আপনাকে আন্তরিক আমন্ত্রণ
             </h2>
             
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-              শব্দ ও সুরের এক অনন্য মেলবন্ধনে অনুষ্ঠিত হতে যাচ্ছে <strong className="text-[#fef3c7]">"বিমূর্ত রাত্রি"</strong>। আবৃত্তি, সুরের মূর্ছনা এবং প্রিয়জনদের সান্নিধ্যে মুখরিত হতে আপনার আসনটি এখনি অগ্রিম নিশ্চিত করুন।
+            <p className="text-slate-200 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+              শব্দ ও সুরের এক অনন্য মেলবন্ধনে অনুষ্ঠিত হতে যাচ্ছে <strong className="text-[#fef08a]">"বিমূর্ত রাত্রি"</strong>। আবৃত্তি, সুরের মূর্ছনা এবং প্রিয়জনদের সান্নিধ্যে মুখরিত হতে আপনার আসনটি এখনি অগ্রিম নিশ্চিত করুন।
             </p>
           </div>
 
@@ -83,14 +83,14 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#d4af37]/20 bg-[#030914] py-8 text-center text-xs text-slate-400">
+      <footer className="border-t border-[#d4af37]/20 bg-[#030914] py-8 text-center text-sm text-slate-400">
         <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div>
-            <p className="font-bold text-[#fef08a] text-sm">শব্দ ও সুরে বিমূর্ত রাত্রি ২০২৬</p>
-            <p className="text-slate-400 text-xs mt-0.5">আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা</p>
+            <p className="font-bold text-[#fef08a] text-base">শব্দ ও সুরে বিমূর্ত রাত্রি ২০২৬</p>
+            <p className="text-slate-400 text-sm mt-0.5">আহারী বাহার মিলনায়তন, ধানমন্ডি ২৭, ঢাকা</p>
           </div>
 
-          <p className="text-slate-500 text-[11px]">
+          <p className="text-slate-400 text-xs sm:text-sm">
             © ২০২৬ বিমূর্ত রাত্রি। সর্বস্বত্ব সংরক্ষিত।
           </p>
         </div>

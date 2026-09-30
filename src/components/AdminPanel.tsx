@@ -392,6 +392,7 @@ export default function AdminPanel() {
               <tr>
                 <th className="py-3.5 px-4 font-semibold">আইডি / সময়</th>
                 <th className="py-3.5 px-4 font-semibold">আবেদনকারীর নাম</th>
+                <th className="py-3.5 px-4 font-semibold">টিকিট ও ফি</th>
                 <th className="py-3.5 px-4 font-semibold">যোগাযোগ</th>
                 <th className="py-3.5 px-4 font-semibold">বিকাশ নম্বর</th>
                 <th className="py-3.5 px-4 font-semibold">স্ট্যাটাস</th>
@@ -401,7 +402,7 @@ export default function AdminPanel() {
             <tbody className="divide-y divide-slate-800/60">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                  <td colSpan={7} className="py-12 text-center text-slate-400">
                     কোনো নিবন্ধন পাওয়া যায়নি।
                   </td>
                 </tr>
@@ -424,6 +425,16 @@ export default function AdminPanel() {
                     {/* Name */}
                     <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-100">
                       {reg.name}
+                    </td>
+
+                    {/* Ticket & Amount */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span className="font-bold text-slate-100 bg-[#071d33] px-2 py-0.5 rounded border border-sky-500/30 text-xs">
+                        {reg.ticketCount || 1} টি
+                      </span>
+                      <p className="text-xs font-mono font-bold text-[#fef08a] mt-1">
+                        ৳ {(reg.totalAmount || ((reg.ticketCount || 1) * 500)).toLocaleString()}
+                      </p>
                     </td>
 
                     {/* WhatsApp & Email */}

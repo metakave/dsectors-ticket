@@ -7,6 +7,8 @@ export interface Registration {
   email: string; // ইমেইল
   bkash: string; // টাকা পাঠানোর বিকাশ নম্বর
   bkashSameAsWhatsapp?: boolean;
+  ticketCount?: number; // কয়টি টিকিট
+  totalAmount?: number; // সর্বমোট টাকার পরিমাণ
   registeredAt: string; // ISO String
   formattedDate: string; // e.g. 29 Sep 2026, 10:30 AM (BST)
   status: TicketStatus; // "Ticket Not Sent" by default
@@ -20,6 +22,8 @@ export interface RegisterFormInput {
   email: string;
   bkash: string;
   bkashSameAsWhatsapp?: boolean;
+  ticketCount?: number;
+  totalAmount?: number;
 }
 
 export interface ApiResponse<T = unknown> {

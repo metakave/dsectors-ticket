@@ -37,7 +37,7 @@ export default function PaymentInstruction() {
         {/* Amount Badge */}
         <div className="inline-flex items-center gap-2 bg-[#d4af37]/20 border border-[#d4af37]/50 px-4 py-2 rounded-xl text-sm sm:text-base font-bold text-[#fef08a] w-fit">
           <Tag className="w-4 h-4 text-[#e5c07b]" />
-          <span>টিকিট ফি: ৳ ৫০০ (Amount: 500 Tk)</span>
+          <span>টিকিট ফি: প্রতি টিকিট ৳ ৫০০ (500 Tk / Ticket)</span>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function PaymentInstruction() {
             ১
           </span>
           <p className="leading-relaxed">
-            বিকাশে <strong className="text-[#fef08a]">Send Money</strong> অপশনে গিয়ে এই নাম্বারে <strong className="text-[#fef08a] font-mono font-bold">{bkashNumber}</strong> বিকাশ করুন। <strong className="text-[#e5c07b]">(Amount: 500)</strong>
+            বিকাশে <strong className="text-[#fef08a]">Send Money</strong> অপশনে গিয়ে এই নাম্বারে <strong className="text-[#fef08a] font-mono font-bold">{bkashNumber}</strong> বিকাশ করুন। <strong className="text-[#e5c07b]">(প্রতি টিকিট ৫০০ টাকা হারে নির্ধারিত মোট ফি)</strong>
           </p>
         </div>
 

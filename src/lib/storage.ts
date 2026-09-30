@@ -153,6 +153,9 @@ export async function getRegistrationsAsync(): Promise<Registration[]> {
   // 1. Primary: Load from Vercel Cloud Blob for cross-serverless persistence
   const cloudItems = await fetchFromVercelBlob();
   if (cloudItems) {
+    if (isCacheLoaded && inMemoryRegistrations.length > cloudItems.length) {
+      return inMemoryRegistrations;
+    }
     inMemoryRegistrations = cloudItems;
     isCacheLoaded = true;
     try {
@@ -175,6 +178,8 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     "Registration ID",
     "Date & Time",
     "Name (নাম)",
+    "Ticket Count (টিকিট সংখ্যা)",
+    "Total Amount (মোট টাকা)",
     "WhatsApp Number (হোয়াটসঅ্যাপ)",
     "Email (ইমেইল)",
     "bKash Number (বিকাশ নম্বর)",
@@ -188,6 +193,8 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     "Registration ID": reg.id,
     "Date & Time": reg.formattedDate,
     "Name (নাম)": reg.name,
+    "Ticket Count (টিকিট সংখ্যা)": reg.ticketCount || 1,
+    "Total Amount (মোট টাকা)": reg.totalAmount || ((reg.ticketCount || 1) * 500),
     "WhatsApp Number (হোয়াটসঅ্যাপ)": reg.whatsapp,
     "Email (ইমেইল)": reg.email,
     "bKash Number (বিকাশ নম্বর)": reg.bkash,
@@ -203,6 +210,8 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     { wch: 18 }, // Registration ID
     { wch: 22 }, // Date & Time
     { wch: 25 }, // Name
+    { wch: 16 }, // Ticket Count
+    { wch: 16 }, // Total Amount
     { wch: 20 }, // WhatsApp
     { wch: 30 }, // Email
     { wch: 20 }, // bKash
@@ -285,6 +294,9 @@ export async function addRegistrationAsync(input: RegisterFormInput): Promise<Re
   const count = existing.length + 1;
   const id = `BR-${now.getFullYear()}-${count.toString().padStart(4, "0")}`;
 
+  const ticketCount = Number(input.ticketCount) > 0 ? Math.floor(Number(input.ticketCount)) : 1;
+  const totalAmount = input.totalAmount || (ticketCount * 500);
+
   const newReg: Registration = {
     id,
     name: input.name.trim(),
@@ -292,6 +304,8 @@ export async function addRegistrationAsync(input: RegisterFormInput): Promise<Re
     email: input.email.trim(),
     bkash: input.bkash.trim(),
     bkashSameAsWhatsapp: !!input.bkashSameAsWhatsapp,
+    ticketCount,
+    totalAmount,
     registeredAt: now.toISOString(),
     formattedDate,
     status: "Ticket Not Sent",
@@ -324,6 +338,9 @@ export function addRegistration(input: RegisterFormInput): Registration {
   const count = existing.length + 1;
   const id = `BR-${now.getFullYear()}-${count.toString().padStart(4, "0")}`;
 
+  const ticketCount = Number(input.ticketCount) > 0 ? Math.floor(Number(input.ticketCount)) : 1;
+  const totalAmount = input.totalAmount || (ticketCount * 500);
+
   const newReg: Registration = {
     id,
     name: input.name.trim(),
@@ -331,6 +348,8 @@ export function addRegistration(input: RegisterFormInput): Registration {
     email: input.email.trim(),
     bkash: input.bkash.trim(),
     bkashSameAsWhatsapp: !!input.bkashSameAsWhatsapp,
+    ticketCount,
+    totalAmount,
     registeredAt: now.toISOString(),
     formattedDate,
     status: "Ticket Not Sent",

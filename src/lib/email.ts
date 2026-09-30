@@ -47,7 +47,8 @@ export function getRegistrantEmailText(reg: Registration): string {
 - হোয়াটসঅ্যাপ নম্বর: ${reg.whatsapp}
 - ইমেইল ঠিকানা: ${reg.email}
 - প্রেরক বিকাশ নম্বর: ${reg.bkash}
-- টিকিট ফি: ৳ ৫০০
+- টিকিট সংখ্যা: ${reg.ticketCount || 1} টি
+- টিকিট ফি (Total Amount): ৳ ${(reg.totalAmount || ((reg.ticketCount || 1) * 500)).toLocaleString()}
 - বর্তমান স্ট্যাটাস: পেমেন্ট ভেরিফিকেশন সাপেক্ষে (Pending)
 
 📍 অনুষ্ঠান সূচি ও ভেন্যু:
@@ -150,8 +151,12 @@ export function getRegistrantEmailHtml(reg: Registration): string {
                         <td style="padding: 9px 0; color: #fef08a; font-weight: bold; text-align: right; font-size: 16px; border-bottom: 1px solid #142842;">${reg.bkash}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 9px 0; color: #cbd5e1; border-bottom: 1px solid #142842;">টিকিট ফি (Amount):</td>
-                        <td style="padding: 9px 0; color: #fef08a; font-weight: bold; text-align: right; font-size: 16px; border-bottom: 1px solid #142842;">৳ ৫০০</td>
+                        <td style="padding: 9px 0; color: #cbd5e1; border-bottom: 1px solid #142842;">টিকিট সংখ্যা (Quantity):</td>
+                        <td style="padding: 9px 0; color: #ffffff; font-weight: bold; text-align: right; border-bottom: 1px solid #142842;">${reg.ticketCount || 1} টি</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 9px 0; color: #cbd5e1; border-bottom: 1px solid #142842;">মোট পরিশোধিত ফি (Total Amount):</td>
+                        <td style="padding: 9px 0; color: #fef08a; font-weight: bold; text-align: right; font-size: 16px; border-bottom: 1px solid #142842;">৳ ${(reg.totalAmount || ((reg.ticketCount || 1) * 500)).toLocaleString()}</td>
                       </tr>
                       <tr>
                         <td style="padding: 9px 0; color: #cbd5e1;">বর্তমান স্ট্যাটাস:</td>
@@ -224,6 +229,8 @@ export function getAdminEmailText(reg: Registration, siteUrl: string): string {
 - হোয়াটসঅ্যাপ নম্বর: ${reg.whatsapp}
 - ইমেইল: ${reg.email}
 - বিকাশ নম্বর: ${reg.bkash}
+- টিকিট সংখ্যা: ${reg.ticketCount || 1} টি
+- মোট টাকা: ৳ ${(reg.totalAmount || ((reg.ticketCount || 1) * 500)).toLocaleString()}
 - স্ট্যাটাস: ${reg.status}
 
 অ্যাকশন দরকার: উল্লিখিত বিকাশ নম্বর থেকে টাকা প্রাপ্তি যাচাই করে টিকিট প্রেরণ নিশ্চিত করুন।
@@ -301,6 +308,14 @@ export function getAdminEmailHtml(reg: Registration, siteUrl: string): string {
                 <tr>
                   <td style="padding: 11px 14px; color: #cbd5e1; border-bottom: 1px solid #142842; background-color: #040a14;">বিকাশ নম্বর (bKash)</td>
                   <td style="padding: 11px 14px; color: #fde047; font-weight: bold; font-size: 17px; background-color: #211c06; border-bottom: 1px solid #142842;">${reg.bkash}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 11px 14px; color: #cbd5e1; border-bottom: 1px solid #142842; background-color: #040a14;">টিকিট সংখ্যা (Quantity)</td>
+                  <td style="padding: 11px 14px; color: #ffffff; font-weight: bold; border-bottom: 1px solid #142842;">${reg.ticketCount || 1} টি</td>
+                </tr>
+                <tr>
+                  <td style="padding: 11px 14px; color: #cbd5e1; border-bottom: 1px solid #142842; background-color: #040a14;">মোট টাকা (Total Amount)</td>
+                  <td style="padding: 11px 14px; color: #fef08a; font-weight: bold; font-size: 16px; border-bottom: 1px solid #142842;">৳ ${(reg.totalAmount || ((reg.ticketCount || 1) * 500)).toLocaleString()}</td>
                 </tr>
                 <tr>
                   <td style="padding: 11px 14px; color: #cbd5e1; background-color: #040a14;">স্ট্যাটাস (Status)</td>

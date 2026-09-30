@@ -70,6 +70,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const ticketCount = Number(body.ticketCount) > 0 ? Math.floor(Number(body.ticketCount)) : 1;
+    const totalAmount = ticketCount * 500;
+
     // Add registration and update XLSX
     const newRegistration = await addRegistrationAsync({
       name: name.trim(),
@@ -77,6 +80,8 @@ export async function POST(req: NextRequest) {
       email: email.trim().toLowerCase(),
       bkash: cleanBkash,
       bkashSameAsWhatsapp: !!body.bkashSameAsWhatsapp,
+      ticketCount,
+      totalAmount,
     });
 
     // Detect request origin

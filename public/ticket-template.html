@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Ticket</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&display=swap');
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Tiro Bangla', sans-serif;
+      background-color: #071526;
+      color: #f8fafc;
+      width: 400px;
+      height: 700px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .ticket-container {
+      width: 360px;
+      height: 660px;
+      background: linear-gradient(to bottom, rgba(212, 175, 55, 0.1), rgba(7, 21, 38, 1));
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 20px;
+      padding: 24px;
+      box-sizing: border-box;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Ambient glow */
+    .glow {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 200px;
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 50%;
+      filter: blur(50px);
+      z-index: 0;
+    }
+
+    .content {
+      z-index: 1;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-grow: 1;
+    }
+
+    h1 {
+      color: #e5c07b;
+      font-size: 22px;
+      margin-bottom: 5px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .qr-container img {
+      width: 160px;
+      height: 160px;
+      display: block;
+    }
+
+    .details-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .label {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .value {
+      color: #f8fafc;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+    
+    .value.highlight {
+      color: #d4af37;
+      font-size: 16px;
+    }
+
+    .footer {
+      margin-top: auto;
+      text-align: center;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .ticket-id {
+      font-family: monospace;
+      font-size: 14px;
+      color: #94a3b8;
+      background: rgba(0,0,0,0.5);
+      padding: 6px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .cut-circle {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: #071526;
+      border-radius: 50%;
+      top: 50%;
+      z-index: 5;
+    }
+    .cut-circle.left { left: -15px; border-right: 1px solid rgba(212, 175, 55, 0.4); }
+    .cut-circle.right { right: -15px; border-left: 1px solid rgba(212, 175, 55, 0.4); }
+    
+    .dashed-line {
+      position: absolute;
+      top: calc(50% + 15px);
+      left: 15px;
+      right: 15px;
+      height: 1px;
+      border-top: 1px dashed rgba(212, 175, 55, 0.3);
+      z-index: 4;
+    }
+  </style>
+</head>
+<body>
+  <div class="ticket-container">
+    <div class="glow"></div>
+    
+    <div class="cut-circle left"></div>
+    <div class="cut-circle right"></div>
+    <div class="dashed-line"></div>
+    
+    <div class="content">
+      <h1>শব্দ ও সুরে বিমূর্ত রাত্রি</h1>
+      <div class="subtitle">গান ও কবিতায় এক সন্ধ্যা</div>
+      
+      <div class="qr-container">
+        <img src="data:image/png;base64,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" alt="QR Code">
+      </div>
+      
+      <div class="details-box">
+        <div class="detail-row">
+          <div class="label">Name</div>
+          <div class="value">Emon Rahman</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="label">Tickets</div>
+          <div class="value highlight">1</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="label">Date</div>
+          <div class="value">9 Oct 2026, 6:30 PM</div>
+        </div>
+        
+        <div class="detail-row">
+          <div class="label">Venue</div>
+          <div class="value" style="font-size: 11px;">আহারী বাহার, ধানমন্ডি ২৭</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <div class="ticket-id">BR-2026-0009</div>
+    </div>
+  </div>
+</body>
+</html>
+  

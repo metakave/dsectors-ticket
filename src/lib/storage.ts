@@ -178,7 +178,7 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     "Registration ID",
     "Date & Time",
     "Name (নাম)",
-    "Ticket Count (টিকিট সংখ্যা)",
+    "Ticket Number",
     "Total Amount (মোট টাকা)",
     "WhatsApp Number (হোয়াটসঅ্যাপ)",
     "Email (ইমেইল)",
@@ -193,7 +193,7 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     "Registration ID": reg.id,
     "Date & Time": reg.formattedDate,
     "Name (নাম)": reg.name,
-    "Ticket Count (টিকিট সংখ্যা)": reg.ticketCount || 1,
+    "Ticket Number": reg.ticketCount || 1,
     "Total Amount (মোট টাকা)": reg.totalAmount || ((reg.ticketCount || 1) * 500),
     "WhatsApp Number (হোয়াটসঅ্যাপ)": reg.whatsapp,
     "Email (ইমেইল)": reg.email,
@@ -210,7 +210,7 @@ export function generateXlsxBuffer(items?: Registration[]): Buffer {
     { wch: 18 }, // Registration ID
     { wch: 22 }, // Date & Time
     { wch: 25 }, // Name
-    { wch: 16 }, // Ticket Count
+    { wch: 16 }, // Ticket Number
     { wch: 16 }, // Total Amount
     { wch: 20 }, // WhatsApp
     { wch: 30 }, // Email

@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="relative mx-auto rounded-2xl p-1.5 sm:p-2 bg-gradient-to-b from-[#d4af37]/60 via-[#d4af37]/20 to-[#d4af37]/60 shadow-[0_15px_50px_rgba(0,0,0,0.7)] group">
         <div className="relative rounded-xl overflow-hidden bg-[#071526]">
           <Image
-            src="/ratri.jpeg"
+            src="/top-poster.jpeg"
             alt="শব্দ ও সুরে বিমূর্ত রাত্রি - গান ও কবিতায় এক সন্ধ্যা"
             width={1024}
             height={572}

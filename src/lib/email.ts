@@ -34,7 +34,7 @@ export function createTransporter() {
 export function getRegistrantEmailText(reg: Registration): string {
   return `বিমূর্ত রাত্রি - টিকিট নিবন্ধনের প্রাপ্তি স্বীকার
 
-নমস্কার / প্রিয় ${reg.name},
+শুভেচ্ছা, প্রিয় ${reg.name},
 
 "শব্দ ও সুরে বিমূর্ত রাত্রি" অনুষ্ঠানে আপনার টিকিট নিবন্ধন সফলভাবে গ্রহণ করা হয়েছে।
 
@@ -99,7 +99,7 @@ export function getRegistrantEmailHtml(reg: Registration): string {
           <tr>
             <td style="padding: 28px 24px; background-color: #091b33; color: #ffffff;">
               <div style="font-size: 19px; font-weight: bold; color: #ffffff; margin-bottom: 14px;">
-                নমস্কার / প্রিয় <span style="color: #fef08a;">${reg.name}</span>,
+                শুভেচ্ছা, প্রিয় <span style="color: #fef08a;">${reg.name}</span>,
               </div>
 
               <p style="line-height: 1.7; color: #f1f5f9; font-size: 15.5px; margin: 0 0 18px 0;">

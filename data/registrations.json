@@ -55,7 +55,9 @@
     "formattedDate": "Sep 30, 2026, 09:36 AM (BST)",
     "status": "Ticket Not Sent",
     "ticketCode": "",
-    "notes": ""
+    "notes": "",
+    "ticketCount": 2,
+    "totalAmount": 1000
   },
   {
     "id": "BR-2026-0002",
@@ -68,6 +70,8 @@
     "formattedDate": "Sep 30, 2026, 02:12 AM (BST)",
     "status": "Ticket Not Sent",
     "ticketCode": "",
-    "notes": ""
+    "notes": "",
+    "ticketCount": 1,
+    "totalAmount": 500
   }
 ]

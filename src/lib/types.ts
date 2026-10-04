@@ -1,4 +1,4 @@
-export type TicketStatus = "Ticket Not Sent" | "Ticket Sent";
+export type TicketStatus = "Ticket Not Sent" | "Ticket Sent" | "Mail Sent";
 
 export interface Registration {
   id: string; // e.g. BR-2026-0001

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-tickets": "tsx --env-file=.env.local scripts/generate_all_tickets.ts"
+    "generate-tickets": "tsx --env-file=.env.local scripts/generate_all_tickets.ts",
+    "pull-data": "tsx --env-file=.env.local scripts/pull_live_data.ts",
+    "generate-csv-tickets": "tsx scripts/generate_csv_tickets.ts"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.0",

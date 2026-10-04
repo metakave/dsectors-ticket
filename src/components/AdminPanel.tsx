@@ -101,8 +101,8 @@ export default function AdminPanel() {
   };
 
   const handleToggleStatus = (reg: Registration) => {
-    const nextStatus: TicketStatus =
-      reg.status === "Ticket Sent" ? "Ticket Not Sent" : "Ticket Sent";
+    const isCurrentlySent = reg.status === "Ticket Sent" || reg.status === "Mail Sent";
+    const nextStatus: TicketStatus = isCurrentlySent ? "Ticket Not Sent" : "Mail Sent";
 
     startTransition(async () => {
       try {
@@ -121,7 +121,7 @@ export default function AdminPanel() {
             prev.map((r) => (r.id === reg.id ? { ...r, status: nextStatus } : r))
           );
           setStats((prev) => {
-            const isNowSent = nextStatus === "Ticket Sent";
+            const isNowSent = nextStatus === "Mail Sent";
             return {
               ...prev,
               pending: isNowSent ? prev.pending - 1 : prev.pending + 1,
@@ -155,7 +155,7 @@ export default function AdminPanel() {
     if (!matchesSearch) return false;
 
     if (statusFilter === "NOT_SENT") return r.status === "Ticket Not Sent";
-    if (statusFilter === "SENT") return r.status === "Ticket Sent";
+    if (statusFilter === "SENT") return r.status === "Ticket Sent" || r.status === "Mail Sent";
     return true;
   });
 
@@ -465,10 +465,10 @@ export default function AdminPanel() {
 
                     {/* Status */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      {reg.status === "Ticket Sent" ? (
+                      {reg.status === "Ticket Sent" || reg.status === "Mail Sent" ? (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                           <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                          <span>Ticket Sent</span>
+                          <span>Mail Sent</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
@@ -483,14 +483,14 @@ export default function AdminPanel() {
                       <button
                         onClick={() => handleToggleStatus(reg)}
                         className={`cursor-pointer px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                          reg.status === "Ticket Sent"
+                          reg.status === "Ticket Sent" || reg.status === "Mail Sent"
                             ? "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
                             : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/30"
                         }`}
                       >
-                        {reg.status === "Ticket Sent"
+                        {reg.status === "Ticket Sent" || reg.status === "Mail Sent"
                           ? "টিকিট পেন্ডিং করুন"
-                          : "টিকিট পাঠানো মার্ক করুন ✓"}
+                          : "মেইল পাঠানো মার্ক করুন ✓"}
                       </button>
                     </td>
                   </tr>

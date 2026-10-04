@@ -27,7 +27,9 @@ export async function GET(req: NextRequest) {
     const pending = registrations.filter(
       (r) => r.status === "Ticket Not Sent"
     ).length;
-    const sent = registrations.filter((r) => r.status === "Ticket Sent").length;
+    const sent = registrations.filter(
+      (r) => r.status === "Ticket Sent" || r.status === "Mail Sent"
+    ).length;
     const xlsxPath = getXlsxFilePath();
 
     return NextResponse.json({
@@ -64,7 +66,11 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    if (status !== "Ticket Sent" && status !== "Ticket Not Sent") {
+    if (
+      status !== "Ticket Sent" &&
+      status !== "Ticket Not Sent" &&
+      status !== "Mail Sent"
+    ) {
       return NextResponse.json(
         { success: false, error: "অবৈধ স্ট্যাটাস মান।" },
         { status: 400 }

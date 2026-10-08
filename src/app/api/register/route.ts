@@ -8,7 +8,17 @@ export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as RegisterFormInput;
+    const body = (await req.json().catch(() => ({}))) as RegisterFormInput;
+
+    // Online registration is now closed
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          "অনলাইন রেজিস্ট্রেশন এখন বন্ধ রয়েছে। তবে আপনারা সরাসরি অনুষ্ঠানস্থলে এসে শো শুরুর পূর্বে টিকিট ক্রয় করতে পারবেন।",
+      },
+      { status: 403 }
+    );
 
     const { name, whatsapp, email, bkash } = body;
 

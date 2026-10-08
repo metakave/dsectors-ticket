@@ -16,6 +16,8 @@ import {
   Send,
   Plus,
   Minus,
+  AlertTriangle,
+  Lock,
 } from "lucide-react";
 import { RegisterFormInput, Registration } from "@/lib/types";
 
@@ -192,20 +194,53 @@ export default function RegistrationForm() {
     setSuccessData(null);
   };
 
+  const isRegistrationClosed = true;
+
   return (
     <div id="registration-section" className="scroll-mt-10">
       <div className="gold-card rounded-2xl p-6 sm:p-10 border border-[#d4af37]/40 bg-[#091b33]/90 relative overflow-hidden shadow-2xl">
+        {/* Registration Closed Notice Banner */}
+        {isRegistrationClosed && (
+          <div className="mb-8 p-6 sm:p-7 rounded-2xl bg-gradient-to-r from-amber-950/95 via-[#211406] to-amber-950/95 border-2 border-amber-500/80 text-white shadow-[0_0_35px_rgba(245,158,11,0.3)] text-center relative overflow-hidden">
+            <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/60 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider mb-3.5">
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>জরুরি বিজ্ঞপ্তি • Notice</span>
+            </div>
+            
+            <h3 className="text-2xl sm:text-3xl font-serif-bn font-bold text-[#fef08a] mb-3">
+              অনলাইন রেজিস্ট্রেশন এখন বন্ধ রয়েছে
+            </h3>
+            
+            <p className="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl mx-auto mb-4">
+              ইলেকট্রনিক রেজিস্ট্রেশন সম্পন্ন হয়েছে এবং অনলাইনে আর কোনো টিকিট বুকিং নেওয়া হচ্ছে না। তবে আপনারা <strong className="text-[#fef08a]">সরাসরি অনুষ্ঠানস্থলে (আহারী বাহার, ধানমন্ডি ২৭) এসে শো শুরুর পূর্বে টিকিট সংগ্রহ করতে পারবেন</strong>।
+            </p>
+            
+            <div className="flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm">
+              <span className="bg-[#071526]/90 border border-amber-500/50 rounded-xl px-4 py-2 text-amber-200 font-semibold flex items-center gap-2">
+                <Lock className="w-4 h-4 text-amber-400" />
+                অনলাইন রেজিস্ট্রেশন: বন্ধ (Closed)
+              </span>
+              <span className="bg-emerald-950/80 border border-emerald-500/60 rounded-xl px-4 py-2 text-emerald-200 font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                অনুষ্ঠানস্থলে সরাসরি টিকিট: উন্মুক্ত (At the Show)
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 bg-[#d4af37]/15 border border-[#d4af37]/40 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold text-[#fef3c7] mb-3">
             <Ticket className="w-4 h-4 text-[#e5c07b]" />
-            <span>টিকিট বুকিং ফর্ম</span>
+            <span>টিকিট বুকিং ফর্ম {isRegistrationClosed ? "(বন্ধ)" : ""}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-serif-bn font-bold text-[#fef08a]">
-            আপনার তথ্য প্রদান করুন
+            {isRegistrationClosed ? "অনলাইন রেজিস্ট্রেশন সমাপ্ত" : "আপনার তথ্য প্রদান করুন"}
           </h2>
           <p className="text-sm sm:text-base text-slate-300 mt-2">
-            ডিজিটাল টিকিট পেতে সঠিক তথ্য দিয়ে নিচের ফর্মটি পূরণ করুন
+            {isRegistrationClosed
+              ? "অনলাইনে টিকিট বিক্রয় সম্পন্ন হয়েছে। টিকিট সংগ্রহ করতে সরাসরি অনুষ্ঠানস্থলে আসুন।"
+              : "ডিজিটাল টিকিট পেতে সঠিক তথ্য দিয়ে নিচের ফর্মটি পূরণ করুন"}
           </p>
         </div>
 
@@ -237,11 +272,12 @@ export default function RegistrationForm() {
               <input
                 id="name"
                 type="text"
+                disabled={isRegistrationClosed}
                 required
                 placeholder="যেমন: কাজী নজরুল ইসলাম"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500"
+                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -268,11 +304,12 @@ export default function RegistrationForm() {
                 inputMode="numeric"
                 pattern="0[0-9]{10}"
                 maxLength={11}
+                disabled={isRegistrationClosed}
                 required
                 placeholder="01XXXXXXXXX (১১ ডিজিট)"
                 value={whatsapp}
                 onChange={(e) => handleWhatsappChange(e.target.value)}
-                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider"
+                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <p className="text-xs text-slate-400 mt-1">
@@ -299,11 +336,12 @@ export default function RegistrationForm() {
               <input
                 id="email"
                 type="email"
+                disabled={isRegistrationClosed}
                 required
                 placeholder="যেমন: yourname@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500"
+                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <p className="text-xs sm:text-sm text-slate-400 mt-1.5">
@@ -312,7 +350,7 @@ export default function RegistrationForm() {
           </div>
 
           {/* 4. কয়টি টিকিট (Quantity of Ticket) */}
-          <div className="p-4 sm:p-5 rounded-xl bg-[#061426] border border-[#d4af37]/40 shadow-inner">
+          <div className="p-4 sm:p-5 rounded-xl bg-[#061426] border border-[#d4af37]/40 shadow-inner relative">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-3">
               <label
                 htmlFor="ticketCount"
@@ -321,6 +359,12 @@ export default function RegistrationForm() {
                 <Ticket className="w-5 h-5 text-[#e5c07b]" />
                 <span>কয়টি টিকিট (Quantity of Ticket)</span>
                 <span className="text-rose-400">*</span>
+                {isRegistrationClosed && (
+                  <span className="text-xs text-amber-300 font-bold bg-amber-950/80 border border-amber-500/60 px-2 py-0.5 rounded ml-1 flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-amber-400" />
+                    ইনপুট বন্ধ (Disabled)
+                  </span>
+                )}
               </label>
               <span className="text-xs sm:text-sm text-slate-300 font-medium">
                 প্রতি টিকিট ফি: ৳ ৫০০ (Per Ticket: 500 Tk)
@@ -329,11 +373,11 @@ export default function RegistrationForm() {
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               {/* Stepper with - on left, input in center, + on right */}
-              <div className="flex items-center shadow-md">
+              <div className={`flex items-center shadow-md ${isRegistrationClosed ? "opacity-50 cursor-not-allowed" : ""}`}>
                 <button
                   type="button"
                   onClick={handleDecrement}
-                  disabled={ticketCount <= 1}
+                  disabled={isRegistrationClosed || ticketCount <= 1}
                   className="w-12 h-12 rounded-l-xl bg-[#0a1e38] hover:bg-[#d4af37]/25 active:bg-[#d4af37]/40 border border-[#d4af37]/40 border-r-0 text-[#fef08a] text-2xl font-bold flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none"
                   aria-label="টিকিট কমান"
                 >
@@ -342,16 +386,18 @@ export default function RegistrationForm() {
                 <input
                   id="ticketCount"
                   type="number"
+                  disabled={isRegistrationClosed}
                   min={1}
                   max={100}
                   value={ticketCount}
                   onChange={handleTicketChange}
-                  className="w-20 sm:w-24 h-12 text-center font-mono font-bold text-xl sm:text-2xl text-[#fef08a] bg-[#040c18] border-y border-[#d4af37]/40 focus:outline-none focus:border-[#d4af37] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-20 sm:w-24 h-12 text-center font-mono font-bold text-xl sm:text-2xl text-[#fef08a] bg-[#040c18] border-y border-[#d4af37]/40 focus:outline-none focus:border-[#d4af37] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none disabled:cursor-not-allowed disabled:text-slate-400"
                 />
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className="w-12 h-12 rounded-r-xl bg-[#0a1e38] hover:bg-[#d4af37]/25 active:bg-[#d4af37]/40 border border-[#d4af37]/40 border-l-0 text-[#fef08a] text-2xl font-bold flex items-center justify-center transition-colors cursor-pointer select-none"
+                  disabled={isRegistrationClosed}
+                  className="w-12 h-12 rounded-r-xl bg-[#0a1e38] hover:bg-[#d4af37]/25 active:bg-[#d4af37]/40 border border-[#d4af37]/40 border-l-0 text-[#fef08a] text-2xl font-bold flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed select-none"
                   aria-label="টিকিট বাড়ান"
                 >
                   <Plus className="w-5 h-5 text-[#fef08a]" />
@@ -373,12 +419,21 @@ export default function RegistrationForm() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#e5c07b] mt-3 flex items-center gap-1.5">
-              <span>💡</span>
-              <span>
-                {ticketCount} টি টিকিটের জন্য সর্বমোট <strong>৳ {totalAmount.toLocaleString()}</strong> টাকা সেন্ড মানি করুন।
-              </span>
-            </p>
+            {isRegistrationClosed ? (
+              <p className="text-xs sm:text-sm text-amber-300 mt-3 flex items-center gap-1.5 font-medium">
+                <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>
+                  অনলাইন রেজিস্ট্রেশন সম্পন্ন হওয়ায় টিকিট সংখ্যা ইনপুট বন্ধ রয়েছে। অনুষ্ঠানস্থলে সরাসরি টিকিট সংগ্রহ করুন।
+                </span>
+              </p>
+            ) : (
+              <p className="text-xs sm:text-sm text-[#e5c07b] mt-3 flex items-center gap-1.5">
+                <span>💡</span>
+                <span>
+                  {ticketCount} টি টিকিটের জন্য সর্বমোট <strong>৳ {totalAmount.toLocaleString()}</strong> টাকা সেন্ড মানি করুন।
+                </span>
+              </p>
+            )}
           </div>
 
           {/* 5. bKash Number & Checkbox */}
@@ -394,12 +449,13 @@ export default function RegistrationForm() {
               </label>
 
               {/* Checkbox: Same as WhatsApp */}
-              <label className="inline-flex items-center gap-2.5 cursor-pointer text-sm sm:text-base text-[#e5c07b] hover:text-[#fef08a] font-medium transition-colors select-none py-1">
+              <label className={`inline-flex items-center gap-2.5 text-sm sm:text-base text-[#e5c07b] font-medium transition-colors select-none py-1 ${isRegistrationClosed ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:text-[#fef08a]"}`}>
                 <input
                   type="checkbox"
+                  disabled={isRegistrationClosed}
                   checked={bkashSameAsWhatsapp}
                   onChange={(e) => handleCheckboxToggle(e.target.checked)}
-                  className="w-4.5 h-4.5 rounded border-[#d4af37] bg-[#071526] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0 cursor-pointer accent-[#d4af37]"
+                  className="w-4.5 h-4.5 rounded border-[#d4af37] bg-[#071526] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0 accent-[#d4af37] disabled:cursor-not-allowed"
                 />
                 <span>হোয়াটসঅ্যাপ নম্বরের মতো একই (Same as WhatsApp)</span>
               </label>
@@ -412,11 +468,12 @@ export default function RegistrationForm() {
                 inputMode="numeric"
                 pattern="0[0-9]{10}"
                 maxLength={11}
+                disabled={isRegistrationClosed}
                 required
                 placeholder="01XXXXXXXXX (যে নম্বর থেকে টাকা পাঠিয়েছেন)"
                 value={bkash}
                 onChange={(e) => handleBkashChange(e.target.value)}
-                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider"
+                className="form-input w-full px-4.5 py-3.5 rounded-xl text-base sm:text-lg font-medium placeholder:text-slate-500 font-mono tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <p className="text-xs text-slate-400 mt-1">
@@ -516,7 +573,16 @@ export default function RegistrationForm() {
 
           {/* Submit Button */}
           <div className="pt-3">
-            {successData ? (
+            {isRegistrationClosed ? (
+              <button
+                type="button"
+                disabled={true}
+                className="w-full py-4.5 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center gap-3 transition-all bg-slate-800/90 text-slate-300 border border-slate-700/80 cursor-not-allowed shadow-none select-none"
+              >
+                <Lock className="w-5 h-5 text-amber-400" />
+                <span>অনলাইন রেজিস্ট্রেশন বন্ধ রয়েছে (Registration Closed)</span>
+              </button>
+            ) : successData ? (
               <button
                 type="button"
                 onClick={handleReset}
@@ -546,12 +612,19 @@ export default function RegistrationForm() {
             )}
           </div>
 
-          {/* Reassurance text */}
+          {/* Reassurance / Notice text */}
           <div className="text-center pt-2">
-            <p className="text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#e5c07b]" />
-              <span>আপনার তথ্য নিরাপদ এবং শুধুমাত্র টিকিট ইস্যুর কাজে ব্যবহৃত হবে।</span>
-            </p>
+            {isRegistrationClosed ? (
+              <p className="text-xs sm:text-sm text-amber-300/90 flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>ইলেকট্রনিক রেজিস্ট্রেশন সমাপ্ত। শো-তে সরাসরি উপস্থিত হয়ে টিকিট সংগ্রহ করুন।</span>
+              </p>
+            ) : (
+              <p className="text-xs sm:text-sm text-slate-400 flex items-center justify-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#e5c07b]" />
+                <span>আপনার তথ্য নিরাপদ এবং শুধুমাত্র টিকিট ইস্যুর কাজে ব্যবহৃত হবে।</span>
+              </p>
+            )}
           </div>
         </form>
       </div>

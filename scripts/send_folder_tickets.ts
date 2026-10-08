@@ -4,7 +4,11 @@ loadEnvConfig(process.cwd());
 import fs from "fs";
 import path from "path";
 import nodemailer from "nodemailer";
-import { updateRegistrationStatusAsync, saveRegistrationsToDisk } from "../src/lib/storage";
+import {
+  updateRegistrationStatusAsync,
+  getRegistrationsAsync,
+  saveRegistrationsAsync,
+} from "../src/lib/storage";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -46,83 +50,107 @@ interface TicketDispatch {
   isDbRecord: boolean;
 }
 
-const targets: TicketDispatch[] = [
+export const targets: TicketDispatch[] = [
   {
-    id: "BR-2026-0019",
-    name: "ইলোরা",
-    ticketCount: 1,
-    email: "sselora.harmony19@gmail.com",
-    filename: "BR-2026-0019.png",
-    isDbRecord: true,
-  },
-  {
-    id: "BR-2026-0018",
-    name: "Kanika Chakraborty",
-    ticketCount: 4,
-    email: "borty.kanika@yahoo.com",
-    filename: "BR-2026-0018.png",
-    isDbRecord: true,
-  },
-  {
-    id: "BR-2026-0017",
-    name: "Sayema Mukarrama",
-    ticketCount: 1,
-    email: "sayema14bd@gmail.com",
-    filename: "BR-2026-0017.png",
-    isDbRecord: true,
-  },
-  {
-    id: "BR-OFFLINE-01",
-    name: "Ferdoushi Begum",
-    ticketCount: 1,
-    email: "ferdoushi@yahoo.com",
-    filename: "BR-OFFLINE-01.png",
-    isDbRecord: false,
-  },
-  {
-    id: "BR-2026-0015",
-    name: "কাজী নজরুল ইসলাম",
-    ticketCount: 1,
-    email: "sarothy@gmail.com",
-    filename: "BR-2026-0015.png",
-    isDbRecord: true,
-  },
-  {
-    id: "BR-2026-0013",
-    name: "Ferdowsi Rita",
+    id: "BR-2026-0037",
+    name: "Biplob Kumar Hazra",
     ticketCount: 2,
-    email: "ferdowsi.rita@gmail.com",
-    filename: "BR-2026-0013.png",
+    email: "hazrabiplob@yahoo.com",
+    filename: "BR-2026-0037.png",
     isDbRecord: true,
   },
   {
-    id: "BR-2026-0012",
-    name: "মো: হাবিবুর রহমান শিনু",
+    id: "BR-2026-0036",
+    name: "মাহবুবা রাখি",
     ticketCount: 1,
-    email: "sassybd1978@gmail.com",
-    filename: "BR-2026-0012.png",
+    email: "mahbubaalam300@gmail.com",
+    filename: "BR-2026-0036.png",
     isDbRecord: true,
   },
   {
-    id: "BR-2026-0007",
-    name: "Nahida Parvin",
+    id: "BR-2026-0038",
+    name: "Tahera Jabeen",
     ticketCount: 1,
-    email: "sayemachowdhury.anta@gmail.com",
-    filename: "BR-2026-0007.png",
+    email: "taherajabeen@yahoo.com",
+    filename: "BR-2026-0038.png",
     isDbRecord: true,
   },
   {
-    id: "BR-OFFLINE-02",
-    name: "Mahenaw Wara",
+    id: "BR-OFFLINE-05",
+    name: "Arif Chowdhury",
     ticketCount: 1,
-    email: "manana.manamaya@gmail.com",
-    filename: "BR-OFFLINE-02.png",
+    email: "cmarif007@gmail.com",
+    filename: "BR-OFFLINE-05.png",
     isDbRecord: false,
+  },
+  {
+    id: "BR-2026-0034",
+    name: "AHM Emdadul Islam",
+    ticketCount: 2,
+    email: "emdadulislam936@gmail.com",
+    filename: "BR-2026-0034.png",
+    isDbRecord: false,
+  },
+  {
+    id: "BR-2026-0032",
+    name: "Mohammed Shoeb",
+    ticketCount: 1,
+    email: "shoeb@trtradingbd.com",
+    filename: "BR-2026-0032.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0031",
+    name: "Kishower Amin",
+    ticketCount: 2,
+    email: "kishowerca@gmail.com",
+    filename: "BR-2026-0031.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0030",
+    name: "Juthi",
+    ticketCount: 1,
+    email: "biswas.lipika05@gmail.com",
+    filename: "BR-2026-0030.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0029",
+    name: "Bidhan Chandra Pal",
+    ticketCount: 3,
+    email: "bidhan.probhaaurora@gmail.com",
+    filename: "BR-2026-0029.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0026",
+    name: "Saud Bin Jahan (Susan)",
+    ticketCount: 2,
+    email: "saud.jahan@outlook.com",
+    filename: "BR-2026-0026.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0025",
+    name: "Joya Tasnim",
+    ticketCount: 1,
+    email: "joyatasnim229@gmail.com",
+    filename: "BR-2026-0025.png",
+    isDbRecord: true,
+  },
+  {
+    id: "BR-2026-0020",
+    name: "Delwar Hossain",
+    ticketCount: 1,
+    email: "biswas.lipika05@gmail.com",
+    filename: "BR-2026-0020.png",
+    isDbRecord: true,
   },
 ];
 
 async function main() {
-  const targetFolder = path.join(process.cwd(), "tickets_20261004_171318");
+  const targetFolder = path.join(process.cwd(), "8oct2026");
 
   if (!fs.existsSync(targetFolder)) {
     console.error(`❌ Target folder does not exist: ${targetFolder}`);
@@ -198,7 +226,43 @@ async function main() {
       // Update database status if it's a registered record
       if (item.isDbRecord) {
         try {
-          await updateRegistrationStatusAsync(item.id, "Ticket Sent");
+          await updateRegistrationStatusAsync(item.id, "Mail Sent");
+        } catch {
+          // ignore error if any
+        }
+      } else {
+        try {
+          const existing = await getRegistrationsAsync();
+          if (!existing.some((r) => r.id === item.id || (r.email === item.email && r.name === item.name))) {
+            const now = new Date();
+            const dateOptions: Intl.DateTimeFormatOptions = {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+              timeZone: "Asia/Dhaka",
+            };
+            const formattedDate =
+              new Intl.DateTimeFormat("en-US", dateOptions).format(now) + " (BST)";
+            const newOfflineReg = {
+              id: item.id,
+              name: item.name,
+              whatsapp: "",
+              email: item.email,
+              bkash: "",
+              bkashSameAsWhatsapp: false,
+              ticketCount: item.ticketCount,
+              totalAmount: item.ticketCount * 500,
+              registeredAt: now.toISOString(),
+              formattedDate,
+              status: "Mail Sent" as const,
+              ticketCode: item.id,
+              notes: "Offline CSV registration",
+            };
+            await saveRegistrationsAsync([newOfflineReg, ...existing]);
+          }
         } catch {
           // ignore error if any
         }
@@ -220,7 +284,9 @@ async function main() {
   console.log(`Failed: ${failCount}`);
 }
 
-main().catch((err) => {
-  console.error("Fatal error:", err);
-  process.exit(1);
-});
+if (process.argv[1] === __filename) {
+  main().catch((err) => {
+    console.error("Fatal error:", err);
+    process.exit(1);
+  });
+}

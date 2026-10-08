@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, CheckCircle, Wallet, Tag, Info } from "lucide-react";
+import { Copy, CheckCircle, Wallet, Tag, Info, AlertTriangle, Lock } from "lucide-react";
 
 export default function PaymentInstruction() {
   const [copied, setCopied] = useState(false);
@@ -17,6 +17,19 @@ export default function PaymentInstruction() {
     <div className="gold-card rounded-2xl p-5 sm:p-7 border border-[#d4af37]/40 bg-[#09182d]/95 relative overflow-hidden mb-8 shadow-2xl">
       {/* Decorative gradient top bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent" />
+
+      {/* Online Registration Closed Notice Banner */}
+      <div className="mb-6 p-4 sm:p-5 rounded-xl bg-amber-950/85 border-2 border-amber-500/70 text-amber-200 text-sm sm:text-base flex items-start gap-3.5 shadow-lg">
+        <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+        <div className="leading-relaxed">
+          <strong className="text-[#fef08a] font-bold block mb-1">
+            বিজ্ঞপ্তি: অনলাইন রেজিস্ট্রেশন এখন বন্ধ রয়েছে (Registration Closed)
+          </strong>
+          <span>
+            ইলেকট্রনিক রেজিস্ট্রেশন সম্পন্ন হয়েছে। নতুন করে বিকাশে পেমেন্ট পাঠানোর প্রয়োজন নেই। আপনারা <strong className="text-white">সরাসরি অনুষ্ঠানস্থলে এসে টিকিট ক্রয় করতে পারবেন</strong>।
+          </span>
+        </div>
+      </div>
 
       {/* Title Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">

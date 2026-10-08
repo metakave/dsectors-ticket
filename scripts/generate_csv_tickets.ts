@@ -22,19 +22,22 @@ interface TicketTarget {
   phone: string;
   source: "database" | "offline_csv";
   matchType: string;
+  aliases?: { id: string; filename: string }[];
 }
 
-const csvRaw = `SL,Registration ID,Date & Time,Name (নাম),Ticket Number,Total Amount (মোট টাকা),WhatsApp Number (হোয়াটসঅ্যাপ),Email (ইমেইল),Ticket Code,Notes
-1,BR-2026-0019,"Oct 04, 2026, 10:35 AM (BST)",ইলোরা,1,500,01730599329,sselora.harmony19@gmail.com,-,
-2,BR-2026-0018,"Oct 03, 2026, 08:34 PM (BST)",Kanika Chakraborty,4,2000,01713379897,borty.kanika@yahoo.com,-,
-3,BR-2026-0017,"Oct 03, 2026, 07:54 PM (BST)",Sayema Mukarrama,1,500,01973091880,sayema14bd@gmail.com,-,
-,,,Ferdoushi Begum,1,,1717144778,ferdoushi@yahoo.com,,
-,,,,1,,1715665359,moradana14@gmail.com,,
-5,BR-2026-0015,"Oct 03, 2026, 07:13 PM (BST)",কাজী নজরুল ইসলাম,1,500,01845972555,sarothy@gmail.com,-,
-7,BR-2026-0013,"Oct 03, 2026, 12:06 PM (BST)",Ferdowsi Rita,2,1000,01732770345,ferdowsi.rita@gmail.com,-,
-8,BR-2026-0012,"Oct 02, 2026, 11:09 PM (BST)",মো: হাবিবুর রহমান শিনু,1,500,01712286494,sassybd1978@gmail.com,-,
-13,BR-2026-0007,"Oct 01, 2026, 11:38 PM (BST)",Nahida Parvin,1,500,1712011454,sayemachowdhury.anta@gmail.com,-,
-,,,Mahenaw Wara,1,500,01030300120 ,manana.manamaya@gmail.com,,`;
+const csvRaw = `Registration ID,Name (নাম),Ticket Number,Total Amount (মোট টাকা),WhatsApp Number (হোয়াটসঅ্যাপ),Email (ইমেইল)
+BR-2026-0037,Biplob Kumar Hazra,2,1000,01733454575,hazrabiplob@yahoo.com
+BR-2026-0036,মাহবুবা রাখি,1,500,01615253954,mahbubaalam300@gmail.com
+BR-2026-0035,Tahera Jabeen,1,500,1715325576,taherajabeen@yahoo.com
+,Arif Chowdhury,1,500,1313434011,cmarif007@gmail.com
+BR-2026-0034,AHM Emdadul Islam,2,1000,1797232977,emdadulislam936@gmail.com
+BR-2026-0032,Mohammed Shoeb,1,500,01615253954,shoeb@trtradingbd.com
+BR-2026-0031,Kishower Amin,2,1000,01766903903,kishowerca@gmail.com
+BR-2026-0030,Juthi,1,500,01715458432,biswas.lipika05@gmail.com
+BR-2026-0029,Bidhan Chandra Pal,3,1500,01730715222,bidhan.probhaaurora@gmail.com
+BR-2026-0026,Saud Bin Jahan (Susan),2,1000,01714100924,saud.jahan@outlook.com
+BR-2026-0025,Joya Tasnim,1,500,01911586356,joyatasnim229@gmail.com
+BR-2026-0020,Delwar Hossain,1,500,01715458432,biswas.lipika05@gmail.com`;
 
 function parseCsvLine(line: string): string[] {
   const cols: string[] = [];
@@ -56,23 +59,39 @@ function parseCsvLine(line: string): string[] {
 }
 
 function parseCsv(text: string): CsvRow[] {
-  const lines = text.trim().split("\n").slice(1);
+  const lines = text.trim().split("\n");
+  if (lines.length <= 1) return [];
+
+  const headers = parseCsvLine(lines[0]).map((h) => h.toLowerCase());
+  
+  const findIndex = (...terms: string[]) => {
+    return headers.findIndex((h) => terms.some((t) => h.includes(t.toLowerCase())));
+  };
+
+  const slIdx = findIndex("sl");
+  const regIdIdx = findIndex("registration id", "reg id");
+  const nameIdx = findIndex("name", "নাম");
+  const countIdx = findIndex("ticket number", "ticket count", "tickets");
+  const amountIdx = findIndex("total amount", "amount", "টাকা");
+  const phoneIdx = findIndex("whatsapp", "phone", "mobile");
+  const emailIdx = findIndex("email", "ইমেইল");
+
   const rows: CsvRow[] = [];
 
-  for (const line of lines) {
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
     if (!line.trim() || line.replace(/,/g, "").trim() === "") continue;
 
     const cols = parseCsvLine(line);
-    const sl = cols[0] || "";
-    const regId = cols[1] || "";
-    const dateTime = cols[2] || "";
-    const name = cols[3] || "";
-    const ticketCount = parseInt(cols[4] || "1", 10) || 1;
-    const totalAmount = cols[5] || "";
-    const phone = cols[6] || "";
-    const email = cols[7] || "";
+    const sl = slIdx >= 0 ? cols[slIdx] || "" : "";
+    const regId = regIdIdx >= 0 ? cols[regIdIdx] || "" : "";
+    const name = nameIdx >= 0 ? cols[nameIdx] || "" : "";
+    const ticketCount = countIdx >= 0 ? parseInt(cols[countIdx] || "1", 10) || 1 : 1;
+    const totalAmount = amountIdx >= 0 ? cols[amountIdx] || "" : "";
+    const phone = phoneIdx >= 0 ? cols[phoneIdx] || "" : "";
+    const email = emailIdx >= 0 ? cols[emailIdx] || "" : "";
 
-    rows.push({ sl, regId, dateTime, name, ticketCount, totalAmount, phone, email });
+    rows.push({ sl, regId, dateTime: "", name, ticketCount, totalAmount, phone, email });
   }
 
   return rows;
@@ -297,7 +316,7 @@ async function renderTicketPng(ticket: { id: string; name: string; ticketCount: 
 </body>
 </html>`;
 
-  const tempHtml = path.join("/tmp", `temp-ticket-${ticket.id.replace(/[^a-zA-Z0-9_-]/g, "_")}.html`);
+  const tempHtml = path.join("/tmp", `temp-ticket-${ticket.id.replace(/[^a-zA-Z0-9_-]/g, "_")}-${Date.now()}.html`);
   fs.writeFileSync(tempHtml, htmlContent, "utf-8");
 
   try {
@@ -318,11 +337,8 @@ async function main() {
   const csvRows = parseCsv(csvRaw);
   console.log(`Parsed ${csvRows.length} rows from CSV.`);
 
-  // Create date-time stamped folder: tickets_YYYYMMDD_HHMMSS
-  const now = new Date();
-  const pad = (n: number) => n.toString().padStart(2, "0");
-  const folderStamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-  const folderName = `tickets_${folderStamp}`;
+  // Target output folder specified by user: 8oct2026
+  const folderName = "8oct2026";
   const outputDir = path.join(process.cwd(), folderName);
   const localTicketsDir = path.join(process.cwd(), "local_tickets");
 
@@ -333,11 +349,31 @@ async function main() {
     fs.mkdirSync(localTicketsDir, { recursive: true });
   }
 
-  console.log(`Target folder: ${folderName}\n`);
+  console.log(`Target folder: ${folderName} (${outputDir})\n`);
 
   const targets: TicketTarget[] = [];
-  const unmatchedRows: CsvRow[] = [];
+  const pad = (n: number) => n.toString().padStart(2, "0");
+
+  // Determine starting offline counter dynamically
   let offlineCounter = 1;
+  const offlineIdRegex = /BR-OFFLINE-(\d+)/i;
+  for (const r of localRegs) {
+    const match = (r.ticketCode || r.id || "").match(offlineIdRegex);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num >= offlineCounter) offlineCounter = num + 1;
+    }
+  }
+  if (fs.existsSync(localTicketsDir)) {
+    const files = fs.readdirSync(localTicketsDir);
+    for (const f of files) {
+      const match = f.match(offlineIdRegex);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (num >= offlineCounter) offlineCounter = num + 1;
+      }
+    }
+  }
 
   for (const row of csvRows) {
     if (!row.name && !row.regId && !row.phone && !row.email) {
@@ -348,10 +384,17 @@ async function main() {
     let dbMatch: any = null;
     let matchType = "";
 
-    // 1. By Registration ID
+    // 1. By Registration ID (with name or email verification if present)
     if (row.regId) {
-      dbMatch = localRegs.find((r) => r.id === row.regId);
-      if (dbMatch) matchType = "Registration ID";
+      const matchCandidate = localRegs.find((r) => r.id === row.regId);
+      if (matchCandidate) {
+        const nameMatches = row.name && matchCandidate.name.trim().toLowerCase() === row.name.trim().toLowerCase();
+        const emailMatches = row.email && matchCandidate.email.trim().toLowerCase() === row.email.trim().toLowerCase();
+        if (nameMatches || emailMatches || !row.name) {
+          dbMatch = matchCandidate;
+          matchType = "Registration ID";
+        }
+      }
     }
 
     // 2. By Name
@@ -361,7 +404,14 @@ async function main() {
       if (dbMatch) matchType = "Exact Name";
     }
 
-    // 3. By Phone
+    // 3. By Email
+    if (!dbMatch && row.email) {
+      const cleanEmail = row.email.trim().toLowerCase();
+      dbMatch = localRegs.find((r) => r.email && r.email.trim().toLowerCase() === cleanEmail);
+      if (dbMatch) matchType = "Email";
+    }
+
+    // 4. By Phone
     if (!dbMatch && row.phone) {
       const cleanPhone = row.phone.replace(/\D/g, "");
       if (cleanPhone.length >= 8) {
@@ -370,84 +420,84 @@ async function main() {
       }
     }
 
-    // 4. By Email
-    if (!dbMatch && row.email) {
-      const cleanEmail = row.email.trim().toLowerCase();
-      dbMatch = localRegs.find((r) => r.email && r.email.trim().toLowerCase() === cleanEmail);
-      if (dbMatch) matchType = "Email";
-    }
-
     if (dbMatch) {
+      // If DB match has a different ID than CSV row, keep both as aliases
+      const aliases: { id: string; filename: string }[] = [];
+      if (row.regId && row.regId !== dbMatch.id) {
+        aliases.push({ id: row.regId, filename: `${row.regId}.png` });
+      }
+      const safeNameFile = `${row.name.trim().replace(/\s+/g, "_")}.png`;
+      aliases.push({ id: dbMatch.id, filename: safeNameFile });
+
       targets.push({
         id: dbMatch.id,
         name: dbMatch.name,
         ticketCount: row.ticketCount || dbMatch.ticketCount || 1,
-        email: dbMatch.email,
-        phone: dbMatch.whatsapp,
+        email: dbMatch.email || row.email,
+        phone: dbMatch.whatsapp || row.phone,
         source: "database",
-        matchType,
+        matchType: matchType + (row.regId && row.regId !== dbMatch.id ? ` (CSV: ${row.regId}, DB: ${dbMatch.id})` : ""),
+        aliases,
       });
     } else if (row.name) {
       // Offline/manual attendee listed in CSV
-      const manualId = `BR-OFFLINE-${pad(offlineCounter++)}`;
+      const primaryId = row.regId ? row.regId : `BR-OFFLINE-${pad(offlineCounter++)}`;
+      const aliases: { id: string; filename: string }[] = [];
+      const safeNameFile = `${row.name.trim().replace(/\s+/g, "_")}.png`;
+      aliases.push({ id: primaryId, filename: safeNameFile });
+
+      if (row.regId && !row.regId.startsWith("BR-OFFLINE-")) {
+        const offId = `BR-OFFLINE-${pad(offlineCounter++)}`;
+        aliases.push({ id: offId, filename: `${offId}.png` });
+      }
+
       targets.push({
-        id: manualId,
+        id: primaryId,
         name: row.name,
         ticketCount: row.ticketCount || 1,
         email: row.email,
         phone: row.phone,
         source: "offline_csv",
-        matchType: "Offline CSV Entry",
+        matchType: row.regId ? `Manual CSV ID (${row.regId})` : "Offline CSV Entry",
+        aliases,
       });
-    } else {
-      unmatchedRows.push(row);
     }
   }
 
-  // De-duplicate targets by ID if duplicate rows exist
-  const uniqueTargets: TicketTarget[] = [];
-  const seenIds = new Set<string>();
-  for (const t of targets) {
-    if (!seenIds.has(t.id)) {
-      seenIds.add(t.id);
-      uniqueTargets.push(t);
-    }
-  }
+  console.log(`Generating tickets for ${targets.length} attendees:\n`);
 
-  console.log(`Generating tickets for ${uniqueTargets.length} matched/identified attendees:\n`);
-
-  for (const target of uniqueTargets) {
+  for (const target of targets) {
     const filename = `${target.id}.png`;
     const outputPath = path.join(outputDir, filename);
     const localTicketPath = path.join(localTicketsDir, filename);
 
     process.stdout.write(`⏳ Generating ${filename} for ${target.name} (${target.ticketCount} ticket${target.ticketCount > 1 ? "s" : ""}) [${target.matchType}]... `);
     await renderTicketPng(target, outputPath);
-
-    // Also copy to local_tickets for send-digital-tickets script
     fs.copyFileSync(outputPath, localTicketPath);
+    console.log("✅ Primary Done");
 
-    // If it is an offline ticket, also make a copy named after the person for convenience
-    if (target.source === "offline_csv") {
-      const nameFilename = `${target.name.replace(/\s+/g, "_")}.png`;
-      fs.copyFileSync(outputPath, path.join(outputDir, nameFilename));
-      fs.copyFileSync(outputPath, path.join(localTicketsDir, nameFilename));
+    // Render aliases / friendly copies
+    if (target.aliases) {
+      for (const alias of target.aliases) {
+        const aliasOutputPath = path.join(outputDir, alias.filename);
+        const aliasLocalPath = path.join(localTicketsDir, alias.filename);
+        if (alias.id === target.id) {
+          fs.copyFileSync(outputPath, aliasOutputPath);
+          fs.copyFileSync(outputPath, aliasLocalPath);
+        } else {
+          // Render with alias ID in badge & QR
+          await renderTicketPng({ id: alias.id, name: target.name, ticketCount: target.ticketCount }, aliasOutputPath);
+          fs.copyFileSync(aliasOutputPath, aliasLocalPath);
+        }
+        console.log(`   ↳ Synced copy: ${alias.filename} (ID: ${alias.id})`);
+      }
     }
-
-    console.log("✅ Done");
   }
 
   console.log("\n================ SUMMARY ================");
-  console.log(`Total generated tickets: ${uniqueTargets.length}`);
-  console.log(`Folder: ${folderName} (${outputDir})`);
-  console.log(`Also synced to: ${localTicketsDir}`);
-
-  if (unmatchedRows.length > 0) {
-    console.log(`\n⚠️ ${unmatchedRows.length} row(s) had no name or matching database record:`);
-    for (const u of unmatchedRows) {
-      console.log(`  - Row without name: Phone="${u.phone || "N/A"}", Email="${u.email || "N/A"}", Tickets=${u.ticketCount}`);
-    }
-  }
+  console.log(`Total attendees processed: ${targets.length}`);
+  console.log(`Target folder: ${folderName} (${outputDir})`);
+  console.log(`Synced to: ${localTicketsDir}`);
 }
 
 main().catch((err) => {

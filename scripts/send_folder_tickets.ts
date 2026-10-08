@@ -182,6 +182,10 @@ async function main() {
     address: process.env.SMTP_USER || "sadiq.alam@gmail.com",
   };
 
+  const ccEmails = process.env.CC_EMAIL
+    ? process.env.CC_EMAIL.split(",").map((e) => e.trim()).filter(Boolean)
+    : undefined;
+
   const bccEmails = (process.env.BCC_EMAIL || "sabinakakoli@gmail.com,sadiq.alam@gmail.com")
     .split(",")
     .map((e) => e.trim())
@@ -190,9 +194,22 @@ async function main() {
   console.log("================ SENDING TICKETS ================");
   console.log(`Source Folder: ${targetFolder}`);
   console.log(`Sender: ${from.name} <${from.address}>`);
+  if (ccEmails) console.log(`CC: ${ccEmails.join(", ")}`);
   console.log(`BCC: ${bccEmails.join(", ")}`);
   console.log(`Total Emails to Dispatch: ${targets.length}\n`);
 
+  interface DispatchResult {
+    name: string;
+    email: string;
+    id: string;
+    ticketCount: number;
+    filename: string;
+    status: "Sent" | "Failed";
+    messageId?: string;
+    error?: string;
+  }
+
+  const results: DispatchResult[] = [];
   let successCount = 0;
   let failCount = 0;
 
@@ -208,6 +225,7 @@ async function main() {
       const info = await transporter.sendMail({
         from,
         to: item.email,
+        cc: ccEmails,
         bcc: bccEmails,
         subject: `আপনার ডিজিটাল টিকিট - শব্দ ও সুরে বিমূর্ত রাত্রি (ID: ${item.id})`,
         html: getEmailHtml(item.name, item.ticketCount),
@@ -222,6 +240,15 @@ async function main() {
 
       console.log(`  ✅ Successfully sent! MessageID: ${info.messageId}`);
       successCount++;
+      results.push({
+        name: item.name,
+        email: item.email,
+        id: item.id,
+        ticketCount: item.ticketCount,
+        filename: item.filename,
+        status: "Sent",
+        messageId: info.messageId,
+      });
 
       // Update database status if it's a registered record
       if (item.isDbRecord) {
@@ -270,11 +297,20 @@ async function main() {
     } catch (err: any) {
       console.error(`  ❌ Failed to send to ${item.email}:`, err.message || err);
       failCount++;
+      results.push({
+        name: item.name,
+        email: item.email,
+        id: item.id,
+        ticketCount: item.ticketCount,
+        filename: item.filename,
+        status: "Failed",
+        error: err.message || String(err),
+      });
     }
 
     if (i < targets.length - 1) {
-      console.log("  ⏳ Waiting 4 seconds before next email...");
-      await sleep(4000);
+      console.log("  ⏳ Waiting 5 seconds before next email...");
+      await sleep(5000);
     }
   }
 
@@ -282,6 +318,9 @@ async function main() {
   console.log(`Total Attempted: ${targets.length}`);
   console.log(`Successfully Sent: ${successCount}`);
   console.log(`Failed: ${failCount}`);
+  console.log("\nJSON_RESULTS_START");
+  console.log(JSON.stringify(results, null, 2));
+  console.log("JSON_RESULTS_END");
 }
 
 if (process.argv[1] === __filename) {

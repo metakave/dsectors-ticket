@@ -1,16 +1,31 @@
 [
   {
-    "id": "BR-2026-0038",
-    "name": "Tahera Jabeen",
-    "whatsapp": "01715325576",
-    "email": "taherajabeen@yahoo.com",
-    "bkash": "01715325576",
+    "id": "BR-OFFLINE-05",
+    "name": "Arif Chowdhury",
+    "whatsapp": "",
+    "email": "cmarif007@gmail.com",
+    "bkash": "",
     "bkashSameAsWhatsapp": false,
     "ticketCount": 1,
     "totalAmount": 500,
-    "registeredAt": "2026-10-08T14:27:41.965Z",
-    "formattedDate": "Oct 08, 2026, 08:27 PM (BST)",
-    "status": "Ticket Not Sent",
+    "registeredAt": "2026-10-08T18:26:32.475Z",
+    "formattedDate": "Oct 09, 2026, 12:26 AM (BST)",
+    "status": "Mail Sent",
+    "ticketCode": "BR-OFFLINE-05",
+    "notes": "Offline CSV registration"
+  },
+  {
+    "id": "BR-2026-0038",
+    "name": "Shanto",
+    "whatsapp": "01715008737",
+    "email": "kmshahriararif.shanto@gmail.com",
+    "bkash": "01715008737",
+    "bkashSameAsWhatsapp": false,
+    "ticketCount": 1,
+    "totalAmount": 500,
+    "registeredAt": "2026-10-08T18:17:20.233Z",
+    "formattedDate": "Oct 09, 2026, 12:17 AM (BST)",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -25,7 +40,7 @@
     "totalAmount": 1000,
     "registeredAt": "2026-10-08T13:42:06.774Z",
     "formattedDate": "Oct 08, 2026, 07:42 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -40,7 +55,7 @@
     "totalAmount": 500,
     "registeredAt": "2026-10-08T11:04:25.611Z",
     "formattedDate": "Oct 08, 2026, 05:04 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -100,7 +115,7 @@
     "totalAmount": 500,
     "registeredAt": "2026-10-08T08:19:25.694Z",
     "formattedDate": "Oct 08, 2026, 02:19 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -115,7 +130,7 @@
     "totalAmount": 1000,
     "registeredAt": "2026-10-08T05:42:57.424Z",
     "formattedDate": "Oct 08, 2026, 11:42 AM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -130,7 +145,7 @@
     "totalAmount": 500,
     "registeredAt": "2026-10-07T16:51:17.894Z",
     "formattedDate": "Oct 07, 2026, 10:51 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -145,7 +160,7 @@
     "totalAmount": 1500,
     "registeredAt": "2026-10-07T09:17:24.061Z",
     "formattedDate": "Oct 07, 2026, 03:17 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -190,7 +205,7 @@
     "totalAmount": 1000,
     "registeredAt": "2026-10-06T17:24:18.228Z",
     "formattedDate": "Oct 06, 2026, 11:24 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -205,7 +220,7 @@
     "totalAmount": 500,
     "registeredAt": "2026-10-06T17:03:39.306Z",
     "formattedDate": "Oct 06, 2026, 11:03 PM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
@@ -280,7 +295,7 @@
     "totalAmount": 500,
     "registeredAt": "2026-10-04T05:43:37.730Z",
     "formattedDate": "Oct 04, 2026, 11:43 AM (BST)",
-    "status": "Ticket Not Sent",
+    "status": "Mail Sent",
     "ticketCode": "",
     "notes": ""
   },
